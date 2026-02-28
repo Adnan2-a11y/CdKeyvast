@@ -61,17 +61,31 @@ const ProductCard = ({
               src={brandImage}
               alt={brandName || "Brand"}
               className="h-full w-full object-contain"
+              onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
             />
           </div>
         )}
         
         {/* Product Image */}
         <div className="mx-auto h-40 w-40">
-          <img
-            src={image}
-            alt={title}
-            className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
-          />
+          {image ? (
+            <img
+              src={image}
+              alt={title}
+              className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
+              onError={(e) => {
+                // Swap to a neutral placeholder so the card never shows a white box
+                const target = e.target as HTMLImageElement;
+                target.onerror = null; // Prevent infinite loop if placeholder also fails
+                target.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Crect width='160' height='160' fill='%23f3f4f6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='12' fill='%239ca3af'%3ENo Image%3C/text%3E%3C/svg%3E`;
+              }}
+            />
+          ) : (
+            // Empty src guard — never pass src="" to an img tag
+            <div className="h-full w-full rounded-lg bg-gray-100 flex items-center justify-center">
+              <span className="text-xs text-gray-400">No Image</span>
+            </div>
+          )}
         </div>
       </div>
 
