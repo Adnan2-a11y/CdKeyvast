@@ -1,0 +1,4 @@
+project_id = "finpquljxzifanpaosuo"
+
+[functions.woocommerce-proxy]
+verify_jwt = false
