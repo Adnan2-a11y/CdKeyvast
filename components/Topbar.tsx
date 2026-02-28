@@ -43,19 +43,6 @@ export default function TopBar() {
       gap: 10,
       cursor: "pointer",
     },
-    logoImage: {
-      width: 30,
-      height: 22,
-      objectFit: "cover",
-      borderRadius: 2,
-      transform: "skewX(-12deg)",
-    },
-    brand: {
-      fontSize: 19,
-      fontWeight: 600,
-      color: "#f3f3f3",
-      letterSpacing: 0.3,
-    },
     rightArea: {
       display: "flex",
       alignItems: "center",
@@ -121,10 +108,17 @@ export default function TopBar() {
         <div style={styles.container}>
           <div style={styles.leftArea}>
             <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{ width: 30, height: 22, borderRadius: 2, transform: "skewX(-12deg)", background: '#c41200', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '10px', fontWeight: 'bold' }}>
-                GCD
+              <div style={{ width: 120, height: 30, display: 'flex', alignItems: 'center' }}>
+                <img 
+                  src="/images/CDkeyVast.svg" 
+                  alt="CDKeyVast Logo" 
+                  style={{ 
+                    width: '100%', 
+                    height: '100%', 
+                    objectFit: 'contain' 
+                  }}
+                />
               </div>
-              <div style={styles.brand}>CDKeyVast</div>
             </Link>
           </div>
 
