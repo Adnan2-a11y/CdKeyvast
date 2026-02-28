@@ -247,10 +247,21 @@ export async function getProducts(params?: {
   per_page?: number;
 }): Promise<{ products: Product[]; total: number }> {
   try {
+    // ── Data Pruning: _fields reduces WC response size by ~70-80% ────────────
+    // Without this, WC sends full product objects including description HTML,
+    // meta_data arrays, review counts, and downloadable file lists — all unused
+    // by the product list UI. This is the primary fix for search latency.
+    const PRODUCT_LIST_FIELDS = [
+      "id", "name", "slug", "price", "regular_price", "sale_price",
+      "on_sale", "images", "categories", "attributes",
+      "stock_status", "average_rating", "rating_count", "sku", "tags",
+    ].join(",");
+
     const qp: Record<string, string> = {
       status: "publish",
       per_page: String(params?.per_page || 100),
       page: String(params?.page || 1),
+      _fields: PRODUCT_LIST_FIELDS,
     };
 
     if (params?.category) qp.category = params.category;
@@ -309,7 +320,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
     throw new Error("PRODUCT_NOT_FOUND");
   } catch (error) {
     logger.error("getProductBySlug", "Failed", error);
-    if (error.message === "PRODUCT_NOT_FOUND") throw error;
+    if (error instanceof Error && error.message === "PRODUCT_NOT_FOUND") throw error;
 
     throw new Error("Could not retrieve product details.");
   }

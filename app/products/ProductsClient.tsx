@@ -9,17 +9,28 @@ import ProductCard from "@/components/ProductCard";
 import { Product, ProductCategory } from "@/types/woocommerce";
 import { useCart } from "@/contexts/CartContext";
 import { productCategories, type Category } from "@/lib/categories";
+import { useDebounce } from "use-debounce";
 
 // ISR handled by the Server Component wrapper — this is the interactive client layer
 export const dynamic = "force-dynamic"; // products page uses URL searchParams
 
 
-const sortOptions = [
-  { value: "popular", label: "Most Popular" },
-  { value: "price-asc", label: "Price: Low → High" },
+// ── Sort Types & Options ────────────────────────────────────────────────────
+// SortValue is derived from the array — adding a new option here automatically
+// expands the type. No need to maintain a separate type union manually.
+const SORT_OPTIONS = [
+  { value: "popular",    label: "Most Popular" },
+  { value: "price-asc",  label: "Price: Low → High" },
   { value: "price-desc", label: "Price: High → Low" },
-  { value: "rating", label: "Highest Rated" },
-];
+  { value: "rating",     label: "Highest Rated" },
+] as const;
+
+type SortValue = typeof SORT_OPTIONS[number]["value"]; // "popular" | "price-asc" | "price-desc" | "rating"
+
+/** Type-guard: rejects any string not in SORT_OPTIONS (e.g. from a tampered URL) */
+function isValidSort(value: string | null): value is SortValue {
+  return SORT_OPTIONS.some((o) => o.value === value);
+}
 
 interface ProductsClientProps {
   initialProducts: Product[];
@@ -36,21 +47,44 @@ export default function ProductsClient({ initialProducts, initialCategories }: P
   const [activeCategory, setActiveCategory] = useState(searchParams.get("category") || "");
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const [search, setSearch] = useState(searchParams.get("search") || "");
-  const [sort, setSort] = useState(searchParams.get("sort") || "popular");
+  // Initialized directly from URL — Back/Forward browser navigation automatically
+  // triggers searchParams to change, which re-runs the sync useEffect below.
+  const rawSort = searchParams.get("sort");
+  const [sort, setSort] = useState<SortValue>(isValidSort(rawSort) ? rawSort : "popular");
+  
+  // Logic State:Only updates after 500ms of silence
+  const [debouncedSearch] = useDebounce(search, 500);
 
-  // Sync state with URL parameters
+  // 3. URL Sync: Update the address bar only when the user is done typing
+useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
+  
+  // Only update if the value actually changed to prevent loops
+  if (params.get("search") === debouncedSearch) return;
+
+  if (debouncedSearch) {
+    params.set("search", debouncedSearch);
+  } else {
+    params.delete("search");
+  }
+  
+  router.push(`?${params.toString()}`, { scroll: false });
+}, [debouncedSearch, router]);
+
+  // ── URL → State Sync (handles Back/Forward navigation) ───────────────────
+  // This is the ONLY place setSort and setActiveCategory are called.
+  // It fires on every URL change, making browser history work for free.
   useEffect(() => {
     const category = searchParams.get("category") || "";
-    const searchQuery = searchParams.get("search") || "";
-    const sortQuery = searchParams.get("sort") || "popular";
-    
+    const rawSortParam = searchParams.get("sort");
+
     setActiveCategory(category);
-    setSearch(searchQuery);
-    setSort(sortQuery);
+    // Validate sort from URL before trusting it — prevents invalid WC API calls
+    setSort(isValidSort(rawSortParam) ? rawSortParam : "popular");
   }, [searchParams]);
 
   // Fetch products when filters change
-  useEffect(() => {
+  /*useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
@@ -72,7 +106,74 @@ export default function ProductsClient({ initialProducts, initialCategories }: P
     };
 
     fetchProducts();
-  }, [activeCategory, search, sort]);
+  }, [activeCategory, search, sort]);*/
+  // ── Optimized Fetch: Fires only on debounced/URL-driven state changes ────
+  // WooCommerce API mapping:
+  //   sort="popular"    → (no orderby param)      → WC default (date)
+  //   sort="price-asc"  → orderby=price&order=asc  → handled in woocommerce.server.ts
+  //   sort="price-desc" → orderby=price&order=desc → handled in woocommerce.server.ts
+  //   sort="rating"     → orderby=rating&order=desc→ handled in woocommerce.server.ts
+  // The API route at /api/products passes `sort` through to getProducts(), which
+  // does the WC param translation — no duplication needed here.
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const params = new URLSearchParams();
+        if (activeCategory) params.set("category", activeCategory);
+        if (debouncedSearch) params.set("search", debouncedSearch);
+        // Only append sort if it differs from the default — keeps URLs cleaner
+        if (sort && sort !== "popular") params.set("sort", sort);
+
+        const response = await fetch(`/api/products?${params.toString()}`);
+        if (!response.ok) {
+          // Surface HTTP errors (500, 503) to the console with context
+          console.error(`[products] API error ${response.status}:`, await response.text());
+          return;
+        }
+        const data = await response.json();
+        setProducts(data.products ?? []);
+      } catch (err) {
+        console.error("[products] Network error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [activeCategory, debouncedSearch, sort]);
+
+  // ── URL-First Handlers ─────────────────────────────────────────────────────
+  // These ONLY update the URL. The searchParams useEffect above reads the URL
+  // and updates local state, which then triggers the fetch useEffect.
+  // This is the single source of truth pattern — no state duplication.
+
+  const handleSortChange = (newSort: string) => {
+    // Reject any value not in SORT_OPTIONS — guards against DOM manipulation
+    if (!isValidSort(newSort)) return;
+
+    const params = new URLSearchParams(window.location.search);
+    // Keep the URL clean: omit the param entirely when it's the default
+    if (newSort !== "popular") {
+      params.set("sort", newSort);
+    } else {
+      params.delete("sort");
+    }
+    // scroll: false prevents jarring page-top jump on sort change
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
+
+  const handleCategoryClick = (categoryName: string) => {
+    const params = new URLSearchParams(window.location.search);
+    // Toggle logic: clicking the active category deselects it
+    const newCategory = activeCategory === categoryName ? "" : categoryName;
+    if (newCategory) {
+      params.set("category", newCategory);
+    } else {
+      params.delete("category");
+    }
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -92,17 +193,7 @@ export default function ProductsClient({ initialProducts, initialCategories }: P
                 {productCategories.map((category: Category) => (
                   <div key={category.name} className="mb-2">
                     <button
-                      onClick={() => {
-                        const newCategory = activeCategory === category.name ? "" : category.name;
-                        setActiveCategory(newCategory);
-                        const params = new URLSearchParams(searchParams.toString());
-                        if (newCategory) {
-                          params.set("category", newCategory);
-                        } else {
-                          params.delete("category");
-                        }
-                        router.push(`/products?${params.toString()}`);
-                      }}
+                      onClick={() => handleCategoryClick(category.name)}
                       onContextMenu={(e) => {
                         e.preventDefault();
                         setExpandedCategory(expandedCategory === category.name ? null : category.name);
@@ -216,10 +307,13 @@ export default function ProductsClient({ initialProducts, initialCategories }: P
                 </div>
                 <select
                   value={sort}
-                  onChange={(e) => setSort(e.target.value)}
-                  className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none"
+                  onChange={(e) => handleSortChange(e.target.value)}
+                  disabled={loading}
+                  className={`rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none transition-opacity ${
+                    loading ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
                 >
-                  {sortOptions.map((o) => (
+                  {SORT_OPTIONS.map((o) => (
                     <option key={o.value} value={o.value}>
                       {o.label}
                     </option>
@@ -229,7 +323,16 @@ export default function ProductsClient({ initialProducts, initialCategories }: P
             </div>
 
             {/* Product Grid - 4 columns */}
-            {loading ? (
+            {/* Loading uses opacity overlay instead of replacing the grid with skeletons.
+                This prevents layout shift on sort/filter changes — the cards stay in place
+                and dim to signal that new data is incoming. Skeletons only show on the
+                very first load when there are no products to display yet. */}
+            {!loading && products.length === 0 ? (
+              <div className="py-20 text-center text-gray-500">
+                <p className="text-lg">No games found matching your criteria.</p>
+              </div>
+            ) : loading && products.length === 0 ? (
+              // First-load skeleton — only shown when there's nothing to overlay
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {Array.from({ length: 8 }).map((_, i) => (
                   <div key={i} className="animate-pulse">
@@ -244,12 +347,13 @@ export default function ProductsClient({ initialProducts, initialCategories }: P
                   </div>
                 ))}
               </div>
-            ) : products.length === 0 ? (
-              <div className="py-20 text-center text-gray-500">
-                <p className="text-lg">No games found matching your criteria.</p>
-              </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              // Overlay pattern: grid stays visible but dims during re-fetches
+              <div
+                className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 transition-opacity duration-200 ${
+                  loading ? "opacity-40 pointer-events-none" : "opacity-100"
+                }`}
+              >
                 {products.map((product, i) => (
                   <motion.div
                     key={product.id}
