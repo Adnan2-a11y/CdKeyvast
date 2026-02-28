@@ -1,5 +1,6 @@
 import Link from "next/link";
 import PaymentTrustBar from "./PaymentTrustBar";
+import Container from "@/components/ui/container";
 
 
 
@@ -18,8 +19,7 @@ const Footer = () => {
       {/* Links */}
 
       <div className="bg-black text-white">
-
-      <div className="container mx-auto grid gap-6 px-4 py-8 md:grid-cols-4">
+      <Container className="grid gap-6 py-8 md:grid-cols-4">
 
         <div>
 
@@ -232,21 +232,13 @@ const Footer = () => {
           <p className="text-xs font-semibold text-white">1-800-257-7220</p>
 
         </div>
-
-      </div>
-
-
+      </Container>
 
       <div className="border-t border-gray-800 py-3">
-
-        <div className="container mx-auto px-4 text-center text-[10px] text-gray-400">
-
+        <Container className="text-center text-[10px] text-gray-400">
           © 2026 CDKeyVast. All rights reserved. All prices are in EUR.
-
-        </div>
-
+        </Container>
       </div>
-
       </div>
 
     </footer>

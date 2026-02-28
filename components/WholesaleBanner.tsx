@@ -3,11 +3,12 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, Gift, Gamepad2 } from "lucide-react";
+import Container from "@/components/ui/container";
 
 const WholesaleBanner = () => {
   return (
     <section className="py-12 md:py-16 bg-white">
-      <div className="container mx-auto px-4">
+      <Container>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           
           {/* Wholesale Welcome Section */}
@@ -115,7 +116,7 @@ const WholesaleBanner = () => {
           </motion.div>
 
         </div>
-      </div>
+      </Container>
     </section>
   );
 };

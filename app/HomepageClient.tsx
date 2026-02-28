@@ -13,6 +13,7 @@ import WholesaleBanner from "@/components/WholesaleBanner";
 import HowItWorks from "@/components/HowItWorks";
 import Reviews from "@/components/Reviews";
 import GiftCardSection from "@/components/GiftCardSection";
+import Container from "@/components/ui/container";
 
 interface HomepageClientProps {
   initialProducts: Product[];
@@ -29,13 +30,13 @@ export default function HomepageClient({ initialProducts, categories }: Homepage
 
       {/* Tagline Section */}
       <section className="bg-white py-8">
-        <div className="container mx-auto px-4 text-center">
+        <Container className="text-center">
           <h2 className="font-display text-lg font-bold text-gray-900 md:text-xl">
             The Best Source for <span className="text-red-600">US Game Cards</span>
           </h2>
           <div className="mx-auto mt-3 h-0.5 w-32 bg-red-600" />
           <p className="mt-3 text-sm font-medium text-gray-700">Buy Now. Play Now.</p>
-        </div>
+        </Container>
       </section>
 
       <GiftCardSection />
@@ -50,7 +51,7 @@ export default function HomepageClient({ initialProducts, categories }: Homepage
 
       {/* Newsletter */}
       <section className="bg-white border-y border-border py-14">
-        <div className="container mx-auto px-4 text-center">
+        <Container className="text-center">
           <h2 className="mb-3 font-display text-xl font-bold uppercase tracking-widest text-black md:text-2xl">
             Never Miss a <span className="neon-text text-primary">Deal</span>
           </h2>
@@ -67,7 +68,7 @@ export default function HomepageClient({ initialProducts, categories }: Homepage
               Subscribe
             </button>
           </div>
-        </div>
+        </Container>
       </section>
     </>
   );

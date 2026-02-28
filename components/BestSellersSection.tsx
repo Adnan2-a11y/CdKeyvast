@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCart } from "@/contexts/CartContext";
 import { Product } from "@/types/woocommerce";
 import ProductCard from "@/components/ProductCard";
+import Container from "@/components/ui/container";
 
 interface BestSellersSectionProps {
   initialProducts: Product[];
@@ -17,7 +18,7 @@ export default function BestSellersSection({
 
   return (
     <section className="bg-white border-b border-border py-10 md:py-14">
-      <div className="container mx-auto px-4">
+      <Container>
 
         {/* Section Title */}
         <div className="mb-8 flex items-center gap-4">
@@ -105,7 +106,7 @@ export default function BestSellersSection({
             View All Products →
           </Link>
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

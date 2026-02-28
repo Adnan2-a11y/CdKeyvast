@@ -1,9 +1,10 @@
 import { Globe, Shield, Zap, CreditCard } from "lucide-react";
+import Container from "@/components/ui/container";
 
 const PaymentTrustBar = () => {
   return (
     <div className="bg-red-600 py-6">
-      <div className="container mx-auto px-4">
+      <Container>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-white">
           {/* Payment Methods Column */}
           <div className="text-center md:text-left">
@@ -60,7 +61,7 @@ const PaymentTrustBar = () => {
             </div>
           </div>
         </div>
-      </div>
+      </Container>
     </div>
   );
 };
