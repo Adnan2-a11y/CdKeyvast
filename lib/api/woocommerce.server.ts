@@ -89,7 +89,7 @@ async function wcFetch<T>(options: WcFetchOptions): Promise<WcResponse<T>> {
   }
 
   // ─── Paginated: fetch ALL pages ───────────────────────────────────────
-  let allResults: unknown[] = [];
+  /*let allResults: unknown[] = [];
   let page = 1;
   let totalItems = 0;
 
@@ -121,7 +121,70 @@ async function wcFetch<T>(options: WcFetchOptions): Promise<WcResponse<T>> {
   logger.info("wc-fetch", `Paginated ${url.pathname} complete`, { pages: page, totalItems });
 
   return { data: allResults as T, total: totalItems, totalPages: page };
+}*/
+// ─── Paginated: fetch ALL pages (Hardened Architect Version) ────────────────────────
+  let allResults: any[] = []; // Using any[] for internal accumulation before cast
+  let page = 1;
+  let totalItems = 0;
+  let totalPages = 1;
+
+  // Maximum items allowed in memory before we force a stop (Safety Guard)
+  const MAX_MEMORY_ITEMS = 2000; 
+
+  logger.debug("wc-fetch", `Paginating ${url.pathname}${url.search}`);
+
+  try {
+    while (page <= totalPages) {
+      url.searchParams.set("per_page", "100");
+      url.searchParams.set("page", String(page));
+
+      const res = await fetch(url.toString(), fetchOptions);
+
+      // 1. Better Error Handling: Check for non-JSON responses (502/504 HTML)
+      if (!res.ok) {
+        const errorText = await res.text();
+        logger.error("wc-fetch", `Page ${page} failed: HTTP ${res.status}`, errorText.slice(0, 150));
+        throw new Error(`WC_FETCH_ERROR: ${res.status}`);
+      }
+
+      const pageData = await res.json();
+      
+      // 2. Initial Setup: Set boundaries on the first request
+      if (page === 1) {
+        totalPages = parseInt(res.headers.get("X-WP-TotalPages") || "1", 10);
+        totalItems = parseInt(res.headers.get("X-WP-Total") || "0", 10);
+      }
+
+      // 3. Memory Protection: Prevent Vercel/Node crash if store grows too large
+      if (allResults.length + pageData.length > MAX_MEMORY_ITEMS) {
+        logger.warn("wc-fetch", `Memory Guard triggered at ${allResults.length} items. Truncating fetch.`);
+        break; 
+      }
+
+      allResults.push(...pageData); // More memory efficient than [...spread]
+
+      logger.debug("wc-fetch", `Fetched page ${page}/${totalPages}`);
+
+      page++;
+    }
+
+    logger.info("wc-fetch", `Pagination complete`, { 
+      pagesFetched: page - 1, 
+      totalItemsStored: allResults.length 
+    });
+
+    return { 
+      data: allResults as T, 
+      total: totalItems, 
+      totalPages: totalPages 
+    };
+
+  } catch (error) {
+    logger.error("wc-fetch", "Critical failure during pagination loop", error);
+    throw error; // Rethrow so the caller knows the data is incomplete
+  }
 }
+
 
 // ─── Transforms ────────────────────────────────────────────────────────────
 
@@ -216,7 +279,8 @@ export async function getProducts(params?: {
     return { products, total: result.total || products.length };
   } catch (error) {
     logger.error("getProducts", "Failed to fetch products", error);
-    return { products: [], total: 0 };
+    //return { products: [], total: 0 };
+    throw new Error("Unable to load products.Please check your connection or try again later.");
   }
 }
 
@@ -241,10 +305,13 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
     }
 
     logger.warn("getProductBySlug", `No product found for slug="${slug}"`);
-    return null;
+    //return null;
+    throw new Error("PRODUCT_NOT_FOUND");
   } catch (error) {
     logger.error("getProductBySlug", "Failed", error);
-    return null;
+    if (error.message === "PRODUCT_NOT_FOUND") throw error;
+
+    throw new Error("Could not retrieve product details.");
   }
 }
 

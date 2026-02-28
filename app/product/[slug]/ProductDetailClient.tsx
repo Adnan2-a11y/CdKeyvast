@@ -7,6 +7,8 @@ import { motion } from "framer-motion";
 import { useCart } from "@/contexts/CartContext";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { Product } from "@/types/woocommerce";
+import { SanitizedHTML } from "@/components/SanitizedHTML";
+
 
 interface ProductDetailClientProps {
   product: Product;
@@ -135,10 +137,10 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
               <h3 className="mb-2 font-display text-sm font-semibold uppercase tracking-wider text-foreground">
                 Overview
               </h3>
-              <div
-                className="text-sm leading-relaxed text-muted-foreground"
-                dangerouslySetInnerHTML={{ __html: product.short_description }}
-              />
+               <SanitizedHTML 
+                 html={product.short_description}
+                 className="text-sm leading-relaxed text-muted-foreground"
+               />
             </div>
           )}
 
@@ -148,9 +150,9 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
               <h3 className="mb-2 font-display text-sm font-semibold uppercase tracking-wider text-foreground">
                 Description
               </h3>
-              <div
+              <SanitizedHTML 
+                html={product.description}
                 className="prose prose-sm prose-invert max-w-none text-sm leading-relaxed text-muted-foreground [&_a]:text-primary [&_h2]:text-foreground [&_h3]:text-foreground [&_li]:mb-1 [&_ol]:list-decimal [&_ol]:pl-4 [&_strong]:text-foreground [&_ul]:list-disc [&_ul]:pl-4"
-                dangerouslySetInnerHTML={{ __html: product.description }}
               />
             </div>
           )}

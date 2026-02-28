@@ -5,8 +5,12 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "**",
+        hostname: "try.tic.com.bd",
       },
+      {
+        protocol: "https",
+        hostname: "*.wp.com",
+      }
     ],
   },
 };
