@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, Sparkles } from "lucide-react";
 import Image from "next/image";
+import Container from "@/components/ui/container";
 
 const ModernHeroSection = () => {
   return (
@@ -22,7 +23,7 @@ const ModernHeroSection = () => {
       <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-r from-slate-950/50 via-transparent to-transparent" />
 
-      <div className="container relative mx-auto px-4 py-8 md:py-12 lg:py-16">
+      <Container className="relative py-8 md:py-12 lg:py-16">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center min-h-[400px]">
           
           {/* Left Column - Content */}
@@ -222,7 +223,7 @@ const ModernHeroSection = () => {
             <div className="absolute bottom-1/3 left-1/4 w-72 h-72 bg-green-500/8 rounded-full blur-2xl animate-pulse-neon" style={{ animationDelay: "2.5s" }} />
           </motion.div>
         </div>
-      </div>
+      </Container>
 
       {/* Bottom gradient fade */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-slate-950 to-transparent" />

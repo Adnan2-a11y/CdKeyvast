@@ -10,7 +10,7 @@ export default function TermsAndConditionsPage() {
               <div>
                 <h2 className="text-2xl font-bold mb-4 text-gray-900">1. General Conditions</h2>
                 <p>
-                  By using the Game Card Delivery website and services, you agree to these terms and conditions. 
+                  By using the Cd Key Vast website and services, you agree to these terms and conditions. 
                   These terms apply to all visitors, users, and others who access or use the service.
                 </p>
               </div>
@@ -108,7 +108,7 @@ export default function TermsAndConditionsPage() {
               <div>
                 <h2 className="text-2xl font-bold mb-4 text-gray-900">7. Limitation of Liability</h2>
                 <p>
-                  To the maximum extent permitted by law, Game Card Delivery shall not be liable for any 
+                  To the maximum extent permitted by law, Cd Key Vast shall not be liable for any 
                   indirect, incidental, special, or consequential damages arising from your use of our services 
                   or products, including but not limited to loss of data, profits, or business opportunities.
                 </p>
@@ -146,7 +146,7 @@ export default function TermsAndConditionsPage() {
                 <div className="space-y-2">
                   <p>
                     <strong>10.1 Website Content:</strong> All content on this website, including text, graphics, 
-                    logos, and software, is the property of Game Card Delivery or its content suppliers.
+                    logos, and software, is the property of Cd Key Vast or its content suppliers.
                   </p>
                   <p>
                     <strong>10.2 Trademarks:</strong> All trademarks, service marks, and trade names are the property 
@@ -194,7 +194,7 @@ export default function TermsAndConditionsPage() {
                 <h2 className="text-2xl font-bold mb-4 text-gray-900">14. Entire Agreement</h2>
                 <p>
                   These terms and conditions, together with our Privacy Policy and any other legal notices published 
-                  on our website, constitute the entire agreement between you and Game Card Delivery.
+                  on our website, constitute the entire agreement between you and Cd Key Vast.
                 </p>
               </div>
 

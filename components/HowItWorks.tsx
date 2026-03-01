@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Monitor, Smartphone, CreditCard, Mail, Gift } from "lucide-react";
+import Container from "@/components/ui/container";
 
 // Custom icon components to match the screenshot design
 const ChooseIcon = () => (
@@ -49,7 +50,7 @@ const steps = [
 const HowItWorks = () => {
   return (
     <section className="bg-white border-b border-gray-300 py-10 md:py-14">
-      <div className="container mx-auto px-4">
+      <Container>
         <div className="mb-10 flex items-center gap-4">
           <div className="h-px flex-1 bg-gray-300" />
           <motion.h2
@@ -80,7 +81,7 @@ const HowItWorks = () => {
             </motion.div>
           ))}
         </div>
-      </div>
+      </Container>
     </section>
   );
 };

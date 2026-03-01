@@ -12,6 +12,7 @@ import {
   Apple,
   Coins
 } from "lucide-react";
+import Container from "@/components/ui/container";
 
 const brands = [
   {
@@ -76,7 +77,7 @@ const brands = [
 const BrandBar = () => {
   return (
     <section className="bg-gradient-to-br from-gray-100 to-gray-200 py-3">
-      <div className="container mx-auto px-4">
+      <Container>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-3">
           {brands.map((brand, i) => (
             <motion.div
@@ -141,7 +142,7 @@ const BrandBar = () => {
             </motion.div>
           ))}
         </div>
-      </div>
+      </Container>
     </section>
   );
 };

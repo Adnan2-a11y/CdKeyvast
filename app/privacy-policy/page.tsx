@@ -10,7 +10,7 @@ export default function PrivacyPolicyPage() {
               <div>
                 <h2 className="text-2xl font-bold mb-4 text-gray-900">1. Introduction</h2>
                 <p>
-                  Game Card Delivery ("we," "us," or "our") is committed to protecting your privacy. 
+                  Cd Key Vast ("we," "us," or "our") is committed to protecting your privacy. 
                   This Privacy Policy explains how we collect, use, disclose, and safeguard your information 
                   when you visit our website and use our services.
                 </p>

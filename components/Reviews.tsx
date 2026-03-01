@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Star } from "lucide-react";
 import Link from "next/link";
+import Container from "@/components/ui/container";
 
 const reviews = [
   {
@@ -28,7 +29,7 @@ const reviews = [
 const Reviews = () => {
   return (
     <section className="border-b border-gray-300 bg-white py-10 md:py-14">
-      <div className="container mx-auto px-4">
+      <Container>
         <div className="mb-4 flex items-center gap-4">
           <div className="h-px flex-1 bg-gray-300" />
           <motion.h2
@@ -84,7 +85,7 @@ const Reviews = () => {
             </motion.div>
           ))}
         </div>
-      </div>
+      </Container>
     </section>
   );
 };
