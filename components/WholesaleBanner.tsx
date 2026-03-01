@@ -2,10 +2,13 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, Gift, Gamepad2 } from "lucide-react";
+import { ArrowRight, Gift, Gamepad2, ChevronDown, ChevronUp } from "lucide-react";
 import Container from "@/components/ui/container";
+import { useState } from "react";
 
 const WholesaleBanner = () => {
+  const [showWholesaleDetails, setShowWholesaleDetails] = useState(false);
+  const [showEgiftsDetails, setShowEgiftsDetails] = useState(false);
   return (
     <section className="py-12 md:py-16 bg-white">
       <Container>
@@ -45,13 +48,52 @@ const WholesaleBanner = () => {
               </p>
 
               {/* Button */}
-              <Link
-                href="/wholesale"
+              <button
+                onClick={() => setShowWholesaleDetails(!showWholesaleDetails)}
                 className="inline-flex items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-red-700 transition-colors"
               >
                 MORE INFO
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+                {showWholesaleDetails ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </button>
+
+              {/* Expandable Details */}
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ 
+                  height: showWholesaleDetails ? "auto" : 0,
+                  opacity: showWholesaleDetails ? 1 : 0
+                }}
+                transition={{ duration: 0.3 }}
+                className="overflow-hidden mt-4"
+              >
+                <div className="pt-4 border-t border-gray-600">
+                  <h4 className="text-lg font-semibold mb-3 text-white">Wholesale Benefits:</h4>
+                  <ul className="space-y-2 text-sm text-gray-200">
+                    <li className="flex items-start gap-2">
+                      <span className="text-red-500 mt-1">•</span>
+                      <span>Volume discounts starting at just 10 cards</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-red-500 mt-1">•</span>
+                      <span>Custom branding options available</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-red-500 mt-1">•</span>
+                      <span>Bulk delivery via email or physical cards</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-red-500 mt-1">•</span>
+                      <span>Dedicated account manager support</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-red-500 mt-1">•</span>
+                      <span>Flexible payment terms for qualified businesses</span>
+                    </li>
+                  </ul>
+                  <div className="mt-4 pt-4 border-t border-gray-600">
+                  </div>
+                </div>
+              </motion.div>
 
               {/* Bottom Stats */}
               <div className="mt-8 flex items-center gap-4">
@@ -97,13 +139,52 @@ const WholesaleBanner = () => {
               </p>
 
               {/* Button */}
-              <Link
-                href="/egifts"
+              <button
+                onClick={() => setShowEgiftsDetails(!showEgiftsDetails)}
                 className="inline-flex items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-red-700 transition-colors"
               >
                 MORE INFO
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+                {showEgiftsDetails ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </button>
+
+              {/* Expandable Details */}
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ 
+                  height: showEgiftsDetails ? "auto" : 0,
+                  opacity: showEgiftsDetails ? 1 : 0
+                }}
+                transition={{ duration: 0.3 }}
+                className="overflow-hidden mt-4"
+              >
+                <div className="pt-4 border-t border-gray-600">
+                  <h4 className="text-lg font-semibold mb-3 text-white">eGift Features:</h4>
+                  <ul className="space-y-2 text-sm text-gray-200">
+                    <li className="flex items-start gap-2">
+                      <span className="text-red-500 mt-1">•</span>
+                      <span>Instant delivery via email</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-red-500 mt-1">•</span>
+                      <span>Personalized messages and scheduling</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-red-500 mt-1">•</span>
+                      <span>Wide variety of gaming and retail brands</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-red-500 mt-1">•</span>
+                      <span>No expiration dates on most cards</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-red-500 mt-1">•</span>
+                      <span>Track gift card status and redemption</span>
+                    </li>
+                  </ul>
+                  <div className="mt-4 pt-4 border-t border-gray-600">
+                  </div>
+                </div>
+              </motion.div>
 
               {/* Bottom Stats */}
               <div className="mt-8 flex items-center gap-4">
