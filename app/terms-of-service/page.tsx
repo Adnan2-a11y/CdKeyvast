@@ -10,7 +10,7 @@ export default function TermsOfServicePage() {
               <div>
                 <h2 className="text-2xl font-bold mb-4 text-gray-900">1. Acceptance of Terms</h2>
                 <p>
-                  By accessing and using Game Card Delivery ("the Service"), you accept and agree to be bound 
+                  By accessing and using Cd Key Vast ("the Service"), you accept and agree to be bound 
                   by the terms and provision of this agreement. If you do not agree to abide by the above, 
                   please do not use this service.
                 </p>
@@ -19,7 +19,7 @@ export default function TermsOfServicePage() {
               <div>
                 <h2 className="text-2xl font-bold mb-4 text-gray-900">2. Description of Service</h2>
                 <p>
-                  Game Card Delivery is an online retailer specializing in digital gift cards, game codes, 
+                  Cd Key Vast is an online retailer specializing in digital gift cards, game codes, 
                   and related digital products. We provide instant digital delivery of purchased products 
                   to customers worldwide.
                 </p>
@@ -132,7 +132,7 @@ export default function TermsOfServicePage() {
               <div>
                 <h2 className="text-2xl font-bold mb-4 text-gray-900">10. Limitation of Liability</h2>
                 <p>
-                  In no event shall Game Card Delivery, its directors, employees, partners, agents, suppliers, 
+                  In no event shall Cd Key Vast, its directors, employees, partners, agents, suppliers, 
                   or affiliates be liable for any indirect, incidental, special, consequential, or punitive 
                   damages, including without limitation, loss of profits, data, use, goodwill, or other 
                   intangible losses, resulting from your use of the service.
@@ -142,7 +142,7 @@ export default function TermsOfServicePage() {
               <div>
                 <h2 className="text-2xl font-bold mb-4 text-gray-900">11. Indemnification</h2>
                 <p>
-                  You agree to defend, indemnify, and hold harmless Game Card Delivery and its licensee and 
+                  You agree to defend, indemnify, and hold harmless Cd Key Vast and its licensee and 
                   licensors, and their employees, contractors, agents, officers and directors, from and against 
                   any and all claims, damages, obligations, losses, liabilities, costs or debt, and expenses 
                   (including but not limited to attorney's fees).
