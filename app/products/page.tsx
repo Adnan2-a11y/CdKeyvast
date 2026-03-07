@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getProducts, getCategories } from "@/lib/api/woocommerce.server";
 import ProductsClient from "./ProductsClient";
 
+export const dynamic = 'force-dynamic';
 export const revalidate = 60; // ISR: 60 seconds
 
 export const metadata: Metadata = {
