@@ -2,11 +2,12 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Container from "@/components/ui/container";
 
 export default function GiftCardSection() {
   return (
     <section className="bg-gray-900 py-8 md:py-12">
-      <div className="container mx-auto px-4">
+      <Container>
         <motion.h2
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -72,7 +73,7 @@ export default function GiftCardSection() {
             </div>
           </motion.div>
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

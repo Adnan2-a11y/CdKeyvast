@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/contexts/CartContext";
+import Container from "@/components/ui/container";
 import { 
   gameCardsItems, 
   giftCardsItems, 
@@ -36,7 +37,7 @@ export default function Header() {
 
   return (
     <header className="w-full fixed top-[56px] left-0 z-[999] bg-[#c41200]">
-      <div className="max-w-[1200px] mx-auto flex items-center px-5 h-[55px] relative">
+      <Container className="flex items-center h-[55px] relative">
 
         <nav className="flex gap-[28px] text-[12px] font-[500] text-white uppercase items-center">
 
@@ -96,7 +97,7 @@ export default function Header() {
           </Link>
         </div>
 
-      </div>
+      </Container>
     </header>
   );
 }

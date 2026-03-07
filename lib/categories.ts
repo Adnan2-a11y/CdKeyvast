@@ -55,7 +55,7 @@ export const supportItems: NavItem[] = [
 ];
 
 export const faqItems: NavItem[] = [
-  { label: "Why Game Card Delivery?", href: "/faq/why-game-card-delivery" },
+  { label: "Why Cd Key Vast?", href: "/faq/why-game-card-delivery" },
   { label: "Create Game Accounts", href: "/faq/create-game-accounts" },
   { label: "Redeem Your Gift Card", href: "/faq/redeem-your-gift-card" },
   { label: "International Email Delivery", href: "/faq/international-email-delivery" },

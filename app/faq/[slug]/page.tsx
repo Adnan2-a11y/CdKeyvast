@@ -39,13 +39,13 @@ export default function FAQDynamicPage({ params }: FAQPageProps) {
   const getFAQContent = (slug: string) => {
     const contentMap: Record<string, { title: string; content: JSX.Element }> = {
       "why-game-card-delivery": {
-        title: "Why Game Card Delivery?",
+        title: "Why Cd Key Vast?",
         content: (
           <div className="space-y-6">
             <section>
               <h3 className="text-lg font-semibold text-gray-800 mb-3">Instant Digital Delivery</h3>
               <p className="text-gray-600 leading-relaxed">
-                Game Card Delivery provides instant digital delivery of all game cards and gift cards. 
+                Cd Key Vast provides instant digital delivery of all game cards and gift cards. 
                 No more waiting for physical cards or shipping delays. Once your payment is confirmed, 
                 your digital codes are sent directly to your email within minutes.
               </p>
@@ -189,7 +189,7 @@ export default function FAQDynamicPage({ params }: FAQPageProps) {
             <section>
               <h3 className="text-lg font-semibold text-gray-800 mb-3">Global Delivery Service</h3>
               <p className="text-gray-600 leading-relaxed">
-                Game Card Delivery offers international email delivery to customers worldwide. 
+                Cd Key Vast offers international email delivery to customers worldwide. 
                 Our automated delivery system ensures that your digital game cards and gift cards 
                 are delivered instantly to your email address, regardless of your location.
               </p>
@@ -423,7 +423,7 @@ export default function FAQDynamicPage({ params }: FAQPageProps) {
             <section>
               <h3 className="text-lg font-semibold text-gray-800 mb-3">How We Help</h3>
               <p className="text-gray-600 leading-relaxed">
-                Game Card Delivery makes it easy to purchase US gaming cards from anywhere 
+                Cd Key Vast makes it easy to purchase US gaming cards from anywhere 
                 in the world. We handle the complexities of international transactions and 
                 ensure you receive legitimate codes that work with your accounts.
               </p>

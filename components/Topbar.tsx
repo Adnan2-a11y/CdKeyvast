@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { CSSProperties } from "react";
+import Container from "@/components/ui/container";
 
 export default function TopBar() {
   const TOPBAR_HEIGHT = 56; // ছোট করা হয়েছে
@@ -25,17 +26,8 @@ export default function TopBar() {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      padding: "0 18px",
       width: "100%",
       boxShadow: "0 1px 0 rgba(255,255,255,0.03) inset",
-    },
-    container: {
-      maxWidth: 1200,
-      margin: "0 auto",
-      width: "100%",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
     },
     leftArea: {
       display: "flex",
@@ -105,42 +97,44 @@ export default function TopBar() {
   return (
     <div style={styles.wrapper}>
       <div style={styles.topStrip}>
-        <div style={styles.container}>
-          <div style={styles.leftArea}>
-            <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{ width: 120, height: 30, display: 'flex', alignItems: 'center' }}>
-                <img 
-                  src="/images/CDkeyVast.svg" 
-                  alt="CDKeyVast Logo" 
-                  style={{ 
-                    width: '100%', 
-                    height: '100%', 
-                    objectFit: 'contain' 
-                  }}
-                />
-              </div>
-            </Link>
-          </div>
-
-          <div style={styles.rightArea}>
-            <div style={styles.searchBox}>
-              <input placeholder="Search" style={styles.searchInput} />
-              <button style={styles.searchBtn}>🔍</button>
+        <Container>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={styles.leftArea}>
+              <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ width: 120, height: 30, display: 'flex', alignItems: 'center' }}>
+                  <img 
+                    src="/images/CDkeyVast.svg" 
+                    alt="CDKeyVast Logo" 
+                    style={{ 
+                      width: '100%', 
+                      height: '100%', 
+                      objectFit: 'contain' 
+                    }}
+                  />
+                </div>
+              </Link>
             </div>
-            <Link href="/login">
-              <button style={styles.slimBtn}>
-                LOGIN
-              </button>
-            </Link>
-            <Link href="/checkout">
-              <button
-                style={styles.checkoutBtn}
-              >
-                CHECKOUT
-              </button>
-            </Link>
+
+            <div style={styles.rightArea}>
+              <div style={styles.searchBox}>
+                <input placeholder="Search" style={styles.searchInput} />
+                <button style={styles.searchBtn}>🔍</button>
+              </div>
+              <Link href="/login">
+                <button style={styles.slimBtn}>
+                  LOGIN
+                </button>
+              </Link>
+              <Link href="/checkout">
+                <button
+                  style={styles.checkoutBtn}
+                >
+                  CHECKOUT
+                </button>
+              </Link>
+            </div>
           </div>
-        </div>
+        </Container>
       </div>
     </div>
   );

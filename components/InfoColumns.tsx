@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Gift, CreditCard, Zap, Play } from "lucide-react";
+import Container from "@/components/ui/container";
 
 const features = [
   {
@@ -69,7 +70,7 @@ const InfoColumns = () => {
 
   return (
     <section className="bg-white border-b border-border py-10 md:py-14">
-      <div className="container mx-auto px-4">
+      <Container>
         <div className="grid gap-6 md:grid-cols-3">
           {features.map(({ icon, title, description, items }, i) => (
             <motion.div
@@ -104,7 +105,7 @@ const InfoColumns = () => {
             <div className="h-px flex-1 bg-gray-300"></div>
           </div>
         </div>
-      </div>
+      </Container>
     </section>
   );
 };
