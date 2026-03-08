@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
-  "name": "gamecarddelivary",
-=======
   "name": "cdkeyvast",
->>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
   "private": true,
   "version": "0.1.0",
   "scripts": {
@@ -12,10 +8,7 @@
     "start": "next start",
     "lint": "next lint"
   },
-<<<<<<< HEAD
-=======
   
->>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "^1.2.11",

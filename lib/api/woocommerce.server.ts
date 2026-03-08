@@ -1,10 +1,6 @@
 import "server-only";
 
-<<<<<<< HEAD
-import { Product, ProductCategory } from "@/types/woocommerce";
-=======
 import { Product, ProductCategory, Coupon, CartItem, CategoryTreeNode, HeaderMenuCategory } from "@/types/woocommerce";
->>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
 import { logger } from "@/lib/logger";
 
 // ─── Environment ────────────────────────────────────────────────────────────
@@ -231,19 +227,11 @@ function transformCategory(raw: Record<string, unknown>): ProductCategory {
     id: raw.id as number,
     name: raw.name as string,
     slug: raw.slug as string,
-<<<<<<< HEAD
-=======
     parent: (raw.parent as number) || 0,
->>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
     count: (raw.count as number) || 0,
   };
 }
 
-<<<<<<< HEAD
-// ─── Public API ────────────────────────────────────────────────────────────
-// These functions run ONLY on the server (enforced by `server-only` import).
-// Next.js `fetch` with `next.revalidate` handles ISR caching automatically.
-=======
 function transformCoupon(raw: Record<string, unknown>): Coupon {
   return {
     id: raw.id as number,
@@ -273,7 +261,6 @@ function transformCoupon(raw: Record<string, unknown>): Coupon {
  * These functions run ONLY on the server (enforced by `server-only` import).
  * Next.js `fetch` with `next.revalidate` handles ISR caching automatically.
  */
->>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
 
 /**
  * Fetch products with filtering, sorting, and pagination.
@@ -330,12 +317,7 @@ export async function getProducts(params?: {
     return { products, total: result.total || products.length };
   } catch (error) {
     logger.error("getProducts", "Failed to fetch products", error);
-<<<<<<< HEAD
-    //return { products: [], total: 0 };
-    throw new Error("Unable to load products.Please check your connection or try again later.");
-=======
     throw new Error("Unable to load products. Please check your connection or try again later.");
->>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
   }
 }
 
@@ -360,10 +342,6 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
     }
 
     logger.warn("getProductBySlug", `No product found for slug="${slug}"`);
-<<<<<<< HEAD
-    //return null;
-=======
->>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
     throw new Error("PRODUCT_NOT_FOUND");
   } catch (error) {
     logger.error("getProductBySlug", "Failed", error);
@@ -395,20 +373,6 @@ export async function getCategories(): Promise<ProductCategory[]> {
   }
 }
 
-<<<<<<< HEAD
-/**
- * Fetch top product slugs for `generateStaticParams`.
- * Used at build time only.
- */
-export async function getTopProductSlugs(limit = 50): Promise<string[]> {
-  try {
-    const { products } = await getProducts({ per_page: limit });
-    return products.map((p) => p.slug);
-  } catch {
-    return [];
-  }
-}
-=======
 export function buildCategoryTree(categories: ProductCategory[]): CategoryTreeNode[] {
   const nodesById = new Map<number, CategoryTreeNode>();
   for (const c of categories) {
@@ -757,4 +721,3 @@ export async function validateCoupon(
     return { valid: false, error: "Failed to validate coupon. Please try again.", reason: "server_error" };
   }
 }
->>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f

@@ -202,8 +202,4 @@ const WholesaleBanner = () => {
   );
 };
 
-<<<<<<< HEAD
 export default WholesaleBanner;
-=======
-export default WholesaleBanner;
->>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f

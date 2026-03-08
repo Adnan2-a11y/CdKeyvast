@@ -1,11 +1,7 @@
 "use client";
 
 import { supabase } from "@/lib/supabase/client";
-<<<<<<< HEAD
-import { Order, CreateOrderPayload } from "@/types/woocommerce";
-=======
 import { Order, CreateOrderPayload, ApplyCouponPayload, CouponValidationResult, Coupon, ApplyCouponResponse } from "@/types/woocommerce";
->>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
 
 // Client-side proxy helper — WC keys never leave the Supabase Edge Function
 async function wcProxy<T>(payload: {
@@ -104,8 +100,6 @@ export async function registerUser(_data: {
 }): Promise<{ token: string }> {
   return { token: "mock-jwt-token" };
 }
-<<<<<<< HEAD
-=======
 // ──────────────── COUPON SYSTEM ────────────────
 
 /**
@@ -175,4 +169,3 @@ export async function getActiveCoupons(): Promise<Coupon[]> {
     return [];
   }
 }
->>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
