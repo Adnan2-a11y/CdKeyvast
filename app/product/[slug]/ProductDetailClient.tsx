@@ -5,11 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, ShoppingCart, Star, Shield, Zap, Tag } from "lucide-react";
 import { motion } from "framer-motion";
 import { useCart } from "@/contexts/CartContext";
-<<<<<<< HEAD
-import { useCurrency } from "@/contexts/CurrencyContext";
-=======
 import { useCurrency } from "@/hooks/useCurrency";
->>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
 import { Product } from "@/types/woocommerce";
 import { SanitizedHTML } from "@/components/SanitizedHTML";
 
@@ -37,20 +33,6 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
         Back to Store
       </Link>
 
-<<<<<<< HEAD
-      <div className="grid gap-8 md:grid-cols-2 lg:gap-12">
-        {/* Image */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="relative overflow-hidden rounded-lg border border-border"
-        >
-          <img
-            src={product.images[0]?.src}
-            alt={product.name}
-            className="h-full w-full object-cover"
-          />
-=======
       {/* Product Header */}
       <div className="mb-8">
         <div className="mb-2 flex items-center gap-2">
@@ -100,7 +82,6 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
               className="h-full w-full object-cover"
             />
           </div>
->>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
           {discount > 0 && (
             <div className="absolute left-3 top-3 rounded bg-discount-red px-3 py-1 font-display text-sm font-bold text-foreground">
               -{discount}%
@@ -108,52 +89,12 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
           )}
         </motion.div>
 
-<<<<<<< HEAD
-        {/* Info */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="flex flex-col"
-        >
-          <div className="mb-2 flex items-center gap-2">
-            <span className="rounded bg-secondary px-2 py-0.5 text-xs font-medium text-muted-foreground">
-              {product.platform}
-            </span>
-            {product.categories.map((c) => (
-              <span key={c.id} className="rounded bg-secondary px-2 py-0.5 text-xs font-medium text-muted-foreground">
-                {c.name}
-              </span>
-            ))}
-          </div>
-
-          <h1 className="mb-3 font-display text-2xl font-bold text-foreground md:text-3xl">
-            {product.name}
-          </h1>
-
-          {/* Rating */}
-          <div className="mb-4 flex items-center gap-2">
-            <div className="flex items-center gap-0.5">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star
-                  key={i}
-                  size={16}
-                  className={i < Math.round(product.average_rating) ? "fill-gold text-gold" : "text-muted-foreground/30"}
-                />
-              ))}
-            </div>
-            <span className="text-sm text-muted-foreground">
-              {product.average_rating} ({product.rating_count.toLocaleString()} reviews)
-            </span>
-          </div>
-
-=======
         {/* Short Description and Actions - Takes 2 columns on desktop, positioned beside image */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           className="flex flex-col lg:col-span-2"
         >
->>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
           {/* Price */}
           <div className="mb-6 rounded-lg border border-border bg-secondary/50 p-4">
             <div className="flex items-baseline gap-3">
@@ -198,28 +139,6 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
 
           {/* Short Description */}
           {product.short_description && (
-<<<<<<< HEAD
-            <div>
-              <h3 className="mb-2 font-display text-sm font-semibold uppercase tracking-wider text-foreground">
-                Overview
-              </h3>
-               <SanitizedHTML 
-                 html={product.short_description}
-                 className="text-sm leading-relaxed text-muted-foreground"
-               />
-            </div>
-          )}
-
-          {/* Full Description */}
-          {product.description && (
-            <div className="mt-4">
-              <h3 className="mb-2 font-display text-sm font-semibold uppercase tracking-wider text-foreground">
-                Description
-              </h3>
-              <SanitizedHTML 
-                html={product.description}
-                className="prose prose-sm prose-invert max-w-none text-sm leading-relaxed text-muted-foreground [&_a]:text-primary [&_h2]:text-foreground [&_h3]:text-foreground [&_li]:mb-1 [&_ol]:list-decimal [&_ol]:pl-4 [&_strong]:text-foreground [&_ul]:list-disc [&_ul]:pl-4"
-=======
             <div className="rounded-lg border border-border bg-secondary/30 p-4 lg:p-6">
               <h3 className="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-foreground">
                 Overview
@@ -227,7 +146,6 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
               <SanitizedHTML 
                 html={product.short_description}
                 className="text-sm leading-relaxed text-muted-foreground"
->>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
               />
             </div>
           )}
@@ -236,8 +154,6 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
           <div className="mt-4 text-xs text-muted-foreground">SKU: {product.sku}</div>
         </motion.div>
       </div>
-<<<<<<< HEAD
-=======
 
       {/* Full Description - Spans full width below */}
       {product.description && (
@@ -256,7 +172,6 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
           />
         </motion.div>
       )}
->>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
     </div>
   );
 }

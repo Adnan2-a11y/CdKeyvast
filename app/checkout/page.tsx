@@ -6,18 +6,11 @@ import Link from "next/link";
 import { Lock, CreditCard, Shield, Zap, CheckCircle, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useCart } from "@/contexts/CartContext";
-<<<<<<< HEAD
-import { useCurrency } from "@/contexts/CurrencyContext";
-import { createOrder, getPaymentGateways } from "@/lib/api/woocommerce.client";
-import { BillingAddress } from "@/types/woocommerce";
-import { toast } from "sonner";
-=======
 import { useCurrency } from "@/hooks/useCurrency";
 import { createOrder, getPaymentGateways } from "@/lib/api/woocommerce.client";
 import { BillingAddress } from "@/types/woocommerce";
 import { toast } from "sonner";
 import { CouponInput } from "@/components/CouponInput";
->>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
 
 const gatewayIcons: Record<string, typeof CreditCard> = {
   stripe: CreditCard,
@@ -27,11 +20,7 @@ const gatewayIcons: Record<string, typeof CreditCard> = {
 };
 
 export default function CheckoutPage() {
-<<<<<<< HEAD
-  const { items, total, clearCart } = useCart();
-=======
   const { items, subtotal, finalTotal, discount, appliedCoupon, applyDiscount, removeDiscount } = useCart();
->>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
   const { formatPrice } = useCurrency();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -59,15 +48,6 @@ export default function CheckoutPage() {
     setLoading(true);
     try {
       const gateway = gateways.find((g) => g.id === selectedPayment);
-<<<<<<< HEAD
-      const order = await createOrder({
-        billing,
-        line_items: items.map((i) => ({ product_id: i.product.id, quantity: i.quantity })),
-        payment_method: selectedPayment,
-        payment_method_title: gateway?.title || selectedPayment,
-      });
-      clearCart();
-=======
       
       // Log order creation details for debugging
       console.log("📋 Creating order with:", {
@@ -97,16 +77,12 @@ export default function CheckoutPage() {
       // Clear cart, discount, and coupon when order is placed
       removeDiscount();
       
->>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
       const offlineGateways = ["cod", "bacs", "cheque"];
       if (offlineGateways.includes(selectedPayment)) {
         toast.success("Order placed successfully!");
         router.push("/success");
       } else if (order.payment_url && order.payment_url.startsWith("http")) {
         toast.success("Redirecting to payment...");
-<<<<<<< HEAD
-        window.location.href = order.payment_url;
-=======
         // Capture payment URL before async operation to preserve type safety
         const paymentUrl = order.payment_url;
         setTimeout(() => {
@@ -114,20 +90,14 @@ export default function CheckoutPage() {
             window.location.href = paymentUrl;
           }
         }, 100);
->>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
       } else {
         toast.success("Order placed successfully!");
         router.push("/success");
       }
-<<<<<<< HEAD
-    } catch {
-      toast.error("Something went wrong. Please try again.");
-=======
     } catch (error) {
       console.error("❌ Order creation failed:", error);
       const errorMsg = error instanceof Error ? error.message : "Something went wrong";
       toast.error(errorMsg || "Please try again.");
->>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
     } finally {
       setLoading(false);
     }
@@ -214,8 +184,6 @@ export default function CheckoutPage() {
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="lg:col-span-2">
           <div className="sticky top-28 rounded-lg border border-border bg-card p-6">
             <h3 className="mb-4 font-display text-sm font-bold uppercase tracking-wider text-foreground">Order Summary</h3>
-<<<<<<< HEAD
-=======
 
             {/* Coupon Input Component */}
             <div className="mb-6">
@@ -232,7 +200,6 @@ export default function CheckoutPage() {
               />
             </div>
 
->>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
             <div className="mb-4 max-h-60 space-y-3 overflow-y-auto pr-1">
               {items.map(({ product, quantity }) => (
                 <div key={product.id} className="flex items-start gap-3">
@@ -249,9 +216,6 @@ export default function CheckoutPage() {
               ))}
             </div>
             <div className="space-y-2 border-t border-border pt-4 text-sm">
-<<<<<<< HEAD
-              <div className="flex justify-between text-muted-foreground"><span>Subtotal</span><span className="text-foreground">{formatPrice(total)}</span></div>
-=======
               <div className="flex justify-between text-muted-foreground"><span>Subtotal</span><span className="text-foreground">{formatPrice(subtotal)}</span></div>
               {discount > 0 && (
                 <div className="flex justify-between text-muted-foreground">
@@ -262,17 +226,12 @@ export default function CheckoutPage() {
                   <span className="font-medium text-red-600">-{formatPrice(discount)}</span>
                 </div>
               )}
->>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
               <div className="flex justify-between text-muted-foreground"><span>Delivery</span><span className="font-medium text-price-green">Instant / Free</span></div>
             </div>
             <div className="my-4 border-t border-border" />
             <div className="mb-4 flex items-center justify-between">
               <span className="font-semibold text-foreground">Total</span>
-<<<<<<< HEAD
-              <span className="price-glow font-display text-2xl font-bold text-price-green">{formatPrice(total)}</span>
-=======
               <span className="price-glow font-display text-2xl font-bold text-price-green">{formatPrice(finalTotal)}</span>
->>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
             </div>
             <button type="submit" disabled={loading || !selectedPayment}
               className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3.5 font-display text-sm font-bold uppercase tracking-wider text-primary-foreground transition-all hover:neon-glow disabled:opacity-50">

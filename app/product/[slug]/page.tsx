@@ -3,10 +3,6 @@ import { notFound } from "next/navigation";
 import { getProductBySlug, getTopProductSlugs } from "@/lib/api/woocommerce.server";
 import ProductDetailClient from "./ProductDetailClient";
 
-<<<<<<< HEAD
-export const dynamic = 'force-dynamic';
-=======
->>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
 // ISR: revalidate every 60 seconds
 export const revalidate = 60;
 
