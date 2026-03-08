@@ -5,18 +5,17 @@ import Link from "next/link";
 import { useCart } from "@/contexts/CartContext";
 import Container from "@/components/ui/container";
 import { CurrencySwitcher } from "@/components/CurrencySwitcher";
-import { 
-  gameCardsItems, 
-  giftCardsItems, 
-  supportItems, 
-  faqItems,
-  type NavItem 
-} from "@/lib/categories";
+import type { HeaderMenuCategory, NavItem } from "@/types/woocommerce";
+
+interface HeaderProps {
+  categories: HeaderMenuCategory[];
+}
 
 interface DropdownProps {
   label: string;
   items: NavItem[];
   active: boolean;
+  onToggle: () => void;
   onEnter: () => void;
   onLeave: () => void;
   twoColumns?: boolean;
@@ -27,7 +26,7 @@ interface SimpleLinkProps {
   label: string;
 }
 
-export default function Header() {
+export default function Header({ categories }: HeaderProps) {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const { itemCount } = useCart();
 
@@ -41,43 +40,18 @@ export default function Header() {
       <Container className="flex items-center h-[55px] relative">
 
         <nav className="flex gap-[28px] text-[12px] font-[500] text-white uppercase items-center">
-
-          <Dropdown
-            label="Game Cards"
-            items={gameCardsItems}
-            active={activeDropdown === "gameCards"}
-            onEnter={() => handleDropdownEnter("gameCards")}
-            onLeave={handleDropdownLeave}
-            twoColumns
-          />
-
-          <Dropdown
-            label="Gift Cards"
-            items={giftCardsItems}
-            active={activeDropdown === "giftCards"}
-            onEnter={() => handleDropdownEnter("giftCards")}
-            onLeave={handleDropdownLeave}
-          />
-
-          <SimpleLink href="/products?category=Playstation" label="Playstation" />
-          <SimpleLink href="/products?category=Google Play" label="Google Play" />
-          <SimpleLink href="/products?category=Steam" label="Steam" />
-
-          <Dropdown
-            label="Support"
-            items={supportItems}
-            active={activeDropdown === "support"}
-            onEnter={() => handleDropdownEnter("support")}
-            onLeave={handleDropdownLeave}
-          />
-
-          <Dropdown
-            label="FAQ"
-            items={faqItems}
-            active={activeDropdown === "faq"}
-            onEnter={() => handleDropdownEnter("faq")}
-            onLeave={handleDropdownLeave}
-          />
+          {categories.map((cat) => (
+            <Dropdown
+              key={cat.href}
+              label={cat.label}
+              items={cat.children}
+              active={activeDropdown === cat.href}
+              onToggle={() => setActiveDropdown((cur) => (cur === cat.href ? null : cat.href))}
+              onEnter={() => handleDropdownEnter(cat.href)}
+              onLeave={handleDropdownLeave}
+              twoColumns={cat.children.length > 10}
+            />
+          ))}
         </nav>
 
         {/* Currency Switcher and Cart */}
@@ -106,14 +80,22 @@ export default function Header() {
   );
 }
 
-function Dropdown({ label, items, active, onEnter, onLeave, twoColumns = false }: DropdownProps) {
+function Dropdown({ label, items, active, onToggle, onEnter, onLeave, twoColumns = false }: DropdownProps) {
   return (
     <div
       className="relative"
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
     >
-      <span className="cursor-pointer px-[10px]">{label}</span>
+      <span
+        className="cursor-pointer px-[10px]"
+        onClick={onToggle}
+        role="button"
+        aria-haspopup={items.length > 0 ? "menu" : undefined}
+        aria-expanded={items.length > 0 ? active : undefined}
+      >
+        {label}
+      </span>
 
       <div
         className={`absolute left-0 top-full pt-4 transition-all duration-200 ${
@@ -146,16 +128,5 @@ function Dropdown({ label, items, active, onEnter, onLeave, twoColumns = false }
         </div>
       </div>
     </div>
-  );
-}
-
-function SimpleLink({ href, label }: SimpleLinkProps) {
-  return (
-    <Link
-      href={href}
-      className="px-[10px] hover:text-gray-200"
-    >
-      {label}
-    </Link>
   );
 }

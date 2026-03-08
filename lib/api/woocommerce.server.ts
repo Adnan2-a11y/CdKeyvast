@@ -1,6 +1,6 @@
 import "server-only";
 
-import { Product, ProductCategory, Coupon, CartItem } from "@/types/woocommerce";
+import { Product, ProductCategory, Coupon, CartItem, CategoryTreeNode, HeaderMenuCategory } from "@/types/woocommerce";
 import { logger } from "@/lib/logger";
 
 // ─── Environment ────────────────────────────────────────────────────────────
@@ -227,13 +227,40 @@ function transformCategory(raw: Record<string, unknown>): ProductCategory {
     id: raw.id as number,
     name: raw.name as string,
     slug: raw.slug as string,
+    parent: (raw.parent as number) || 0,
     count: (raw.count as number) || 0,
   };
 }
 
+function transformCoupon(raw: Record<string, unknown>): Coupon {
+  return {
+    id: raw.id as number,
+    code: raw.code as string,
+    discount_type: (raw.discount_type as string) as Coupon["discount_type"],
+    amount: String(raw.amount || "0"),
+    description: (raw.description as string) || undefined,
+    date_expires: (raw.date_expires as string) || null,
+    usage_limit: (raw.usage_limit as number) || null,
+    usage_limit_per_user: (raw.usage_limit_per_user as number) || null,
+    used_by: ((raw.used_by as string[]) || []),
+    usage_count: (raw.usage_count as number) || 0,
+    enable_free_shipping: (raw.free_shipping as boolean) || false,
+    exclude_sale_items: (raw.exclude_sale_items as boolean) || false,
+    minimum_amount: (raw.minimum_amount as string) || undefined,
+    maximum_amount: (raw.maximum_amount as string) || undefined,
+    product_ids: ((raw.product_ids as number[]) || []),
+    excluded_product_ids: ((raw.excluded_product_ids as number[]) || []),
+    product_categories: ((raw.product_categories as number[]) || []),
+    excluded_product_categories: ((raw.excluded_product_categories as number[]) || []),
+    status: ((raw.status as string) || "publish") as "publish" | "draft",
+  };
+}
+
 // ─── Public API ────────────────────────────────────────────────────────────
-// These functions run ONLY on the server (enforced by `server-only` import).
-// Next.js `fetch` with `next.revalidate` handles ISR caching automatically.
+/**
+ * These functions run ONLY on the server (enforced by `server-only` import).
+ * Next.js `fetch` with `next.revalidate` handles ISR caching automatically.
+ */
 
 /**
  * Fetch products with filtering, sorting, and pagination.
@@ -290,8 +317,7 @@ export async function getProducts(params?: {
     return { products, total: result.total || products.length };
   } catch (error) {
     logger.error("getProducts", "Failed to fetch products", error);
-    //return { products: [], total: 0 };
-    throw new Error("Unable to load products.Please check your connection or try again later.");
+    throw new Error("Unable to load products. Please check your connection or try again later.");
   }
 }
 
@@ -316,7 +342,6 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
     }
 
     logger.warn("getProductBySlug", `No product found for slug="${slug}"`);
-    //return null;
     throw new Error("PRODUCT_NOT_FOUND");
   } catch (error) {
     logger.error("getProductBySlug", "Failed", error);
@@ -348,45 +373,56 @@ export async function getCategories(): Promise<ProductCategory[]> {
   }
 }
 
-/**
- * Fetch top product slugs for `generateStaticParams`.
- * Used at build time only.
- */
-export async function getTopProductSlugs(limit = 50): Promise<string[]> {
-  try {
-    const { products } = await getProducts({ per_page: limit });
-    return products.map((p) => p.slug);
-  } catch {
-    return [];
+export function buildCategoryTree(categories: ProductCategory[]): CategoryTreeNode[] {
+  const nodesById = new Map<number, CategoryTreeNode>();
+  for (const c of categories) {
+    nodesById.set(c.id, {
+      id: c.id,
+      name: c.name,
+      slug: c.slug,
+      parent: c.parent,
+      count: c.count,
+      children: [],
+    });
   }
-}
-// ──────────────── COUPON SYSTEM ────────────────
 
-/**
- * Transform raw WooCommerce coupon to our Coupon type
- */
-function transformCoupon(raw: Record<string, unknown>): Coupon {
-  return {
-    id: raw.id as number,
-    code: raw.code as string,
-    discount_type: (raw.discount_type as string) === "percent" ? "percent" : "fixed_cart",
-    amount: String(raw.amount || "0"),
-    description: (raw.description as string) || undefined,
-    date_expires: (raw.date_expires as string) || null,
-    usage_limit: (raw.usage_limit as number) || null,
-    usage_limit_per_user: (raw.usage_limit_per_user as number) || null,
-    used_by: ((raw.used_by as string[]) || []),
-    usage_count: (raw.usage_count as number) || 0,
-    enable_free_shipping: (raw.free_shipping as boolean) || false,
-    exclude_sale_items: (raw.exclude_sale_items as boolean) || false,
-    minimum_amount: (raw.minimum_amount as string) || undefined,
-    maximum_amount: (raw.maximum_amount as string) || undefined,
-    product_ids: ((raw.product_ids as number[]) || []),
-    excluded_product_ids: ((raw.excluded_product_ids as number[]) || []),
-    product_categories: ((raw.product_categories as number[]) || []),
-    excluded_product_categories: ((raw.excluded_product_categories as number[]) || []),
-    status: ((raw.status as string) || "publish") as "publish" | "draft",
-  };
+  const roots: CategoryTreeNode[] = [];
+  nodesById.forEach((node) => {
+    const parentId = node.parent || 0;
+    if (parentId && nodesById.has(parentId)) {
+      nodesById.get(parentId)!.children.push(node);
+    } else {
+      roots.push(node);
+    }
+  });
+
+  return roots;
+}
+
+export function categoryTreeToHeaderMenu(
+  tree: CategoryTreeNode[],
+  options?: {
+    categoryHref?: (slug: string) => string;
+    subcategoryHref?: (slug: string) => string;
+  }
+): HeaderMenuCategory[] {
+  const categoryHref = options?.categoryHref ?? ((slug) => `/products?category=${encodeURIComponent(slug)}`);
+  const subcategoryHref = options?.subcategoryHref ?? ((slug) => `/products?category=${encodeURIComponent(slug)}`);
+
+  return tree.map((parent) => ({
+    label: parent.name,
+    href: categoryHref(parent.slug),
+    children: parent.children.map((child) => ({
+      label: child.name,
+      href: subcategoryHref(child.slug),
+    })),
+  }));
+}
+
+export async function getHeaderMenuCategories(): Promise<HeaderMenuCategory[]> {
+  const categories = await getCategories();
+  const tree = buildCategoryTree(categories);
+  return categoryTreeToHeaderMenu(tree);
 }
 
 /**

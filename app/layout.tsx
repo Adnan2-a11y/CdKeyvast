@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
 import ReviewsButton from "@/components/ReviewsButton";
+import { getHeaderMenuCategories } from "@/lib/api/woocommerce.server";
 
 export const metadata: Metadata = {
   title: {
@@ -24,14 +25,16 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const headerCategories = await getHeaderMenuCategories();
+
   return (
     <html lang="en" className="dark">
       <body className="min-h-screen bg-background text-foreground font-body antialiased">
         <Providers>
           <CartDrawer />
           <TopBar />
-          <Header />
+          <Header categories={headerCategories} />
           <main className="pt-[111px]">{children}</main>
           <Footer />
           <ReviewsButton />

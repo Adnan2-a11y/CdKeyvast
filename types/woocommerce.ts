@@ -9,6 +9,7 @@ export interface ProductCategory {
   id: number;
   name: string;
   slug: string;
+  parent?: number;
   count?: number;
 }
 
@@ -28,6 +29,21 @@ export interface CategoryWithMetadata extends ProductCategory {
 export interface NavItem {
   label: string;
   href: string;
+}
+
+export interface CategoryTreeNode {
+  id: number;
+  name: string;
+  slug: string;
+  parent?: number;
+  count?: number;
+  children: CategoryTreeNode[];
+}
+
+export interface HeaderMenuCategory {
+  label: string;
+  href: string;
+  children: NavItem[];
 }
 
 export interface Product {
