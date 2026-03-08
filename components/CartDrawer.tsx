@@ -76,7 +76,6 @@ const CartDrawer = () => {
                         height={80}
                         className="h-20 w-16 rounded object-cover"
                       />
-
                       <div className="flex flex-1 flex-col justify-between">
                         <div>
                           <h3 className="line-clamp-1 text-sm font-semibold text-foreground">
@@ -111,13 +110,11 @@ const CartDrawer = () => {
                               <Plus size={14} />
                             </button>
                           </div>
-
                           <span className="font-display text-sm font-bold text-price-green">
                             {formatPrice(product.price * quantity)}
                           </span>
                         </div>
                       </div>
-
                       <button
                         onClick={() => removeItem(product.id)}
                         className="self-start text-muted-foreground hover:text-destructive"
@@ -139,7 +136,6 @@ const CartDrawer = () => {
                     {formatPrice(total)}
                   </span>
                 </div>
-
                 <div className="flex flex-col gap-2">
                   <Link
                     href="/checkout"
@@ -148,7 +144,6 @@ const CartDrawer = () => {
                   >
                     Proceed to Checkout
                   </Link>
-
                   <Link
                     href="/cart"
                     onClick={() => setIsOpen(false)}

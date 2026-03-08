@@ -9,6 +9,11 @@ export interface ProductCategory {
   id: number;
   name: string;
   slug: string;
+<<<<<<< HEAD
+  count?: number;
+}
+
+=======
   parent?: number;
   count?: number;
 }
@@ -46,6 +51,7 @@ export interface HeaderMenuCategory {
   children: NavItem[];
 }
 
+>>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
 export interface Product {
   id: number;
   name: string;
@@ -101,7 +107,10 @@ export interface OrderLineItem {
 export interface CreateOrderPayload {
   billing: BillingAddress;
   line_items: OrderLineItem[];
+<<<<<<< HEAD
+=======
   coupon_lines?: Array<{ code: string }>;  // Optional coupon lines for order
+>>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
   payment_method: string;
   payment_method_title: string;
 }
@@ -137,6 +146,8 @@ export interface RegisterData {
   username: string;
   password: string;
 }
+<<<<<<< HEAD
+=======
 // Coupon Types
 export interface Coupon {
   id: number;
@@ -184,3 +195,4 @@ export interface ApplyCouponResponse {
   message?: string;
   error?: string;
 }
+>>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f

@@ -27,9 +27,8 @@ interface CurrencyContextType {
   error: string | null;
 }
 
-const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
+export const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
 
-export { CurrencyContext };
 
 // Fetch exchange rates
 async function fetchExchangeRates(): Promise<ExchangeRates> {
