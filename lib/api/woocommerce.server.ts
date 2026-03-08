@@ -123,7 +123,7 @@ async function wcFetch<T>(options: WcFetchOptions): Promise<WcResponse<T>> {
   return { data: allResults as T, total: totalItems, totalPages: page };
 }*/
 // ─── Paginated: fetch ALL pages (Hardened Architect Version) ────────────────────────
-  let allResults: any[] = []; // Using any[] for internal accumulation before cast
+  const allResults: unknown[] = []; 
   let page = 1;
   let totalItems = 0;
   let totalPages = 1;
@@ -348,6 +348,31 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
     if (error instanceof Error && error.message === "PRODUCT_NOT_FOUND") throw error;
 
     throw new Error("Could not retrieve product details.");
+  }
+}
+
+export async function getTopProductSlugs(limit = 50): Promise<string[]> {
+  try {
+    const safeLimit = Number.isFinite(limit) ? Math.max(1, Math.min(100, Math.floor(limit))) : 50;
+
+    const result = await wcFetch<Array<{ slug?: unknown }>>({
+      endpoint: "/wp-json/wc/v3/products",
+      params: {
+        status: "publish",
+        per_page: String(safeLimit),
+        orderby: "popularity",
+        order: "desc",
+        _fields: "slug",
+      },
+      revalidate: 300,
+    });
+
+    return (result.data ?? [])
+      .map((p) => (typeof p.slug === "string" ? p.slug : null))
+      .filter((s): s is string => Boolean(s));
+  } catch (error) {
+    logger.error("getTopProductSlugs", "Failed to fetch top product slugs", error);
+    return [];
   }
 }
 
