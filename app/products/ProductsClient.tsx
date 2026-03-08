@@ -6,9 +6,15 @@ import { motion } from "framer-motion";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
+<<<<<<< HEAD
 import { Product, ProductCategory } from "@/types/woocommerce";
 import { useCart } from "@/contexts/CartContext";
 import { productCategories, type Category } from "@/lib/categories";
+=======
+import { Product, ProductCategory, CategoryWithMetadata } from "@/types/woocommerce";
+import { useCart } from "@/contexts/CartContext";
+import { useCategories } from "@/hooks/useCategories";
+>>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
 import { useDebounce } from "use-debounce";
 
 // ISR handled by the Server Component wrapper — this is the interactive client layer
@@ -42,6 +48,12 @@ export default function ProductsClient({ initialProducts, initialCategories }: P
   const router = useRouter();
   const { addItem } = useCart();
 
+<<<<<<< HEAD
+=======
+  // Enrich categories with UI metadata (icons, subcategories)
+  const { categories } = useCategories(initialCategories);
+
+>>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [loading, setLoading] = useState(false);
   const [activeCategory, setActiveCategory] = useState(searchParams.get("category") || "");
@@ -190,6 +202,7 @@ useEffect(() => {
                 </div>
               </div>
               <div className="p-2">
+<<<<<<< HEAD
                 {productCategories.map((category: Category) => (
                   <div key={category.name} className="mb-2">
                     <button
@@ -253,6 +266,77 @@ useEffect(() => {
                     )}
                   </div>
                 ))}
+=======
+                {categories.length > 0 ? (
+                  categories.map((category: CategoryWithMetadata) => (
+                    <div key={category.id} className="mb-2">
+                      <button
+                        onClick={() => handleCategoryClick(category.slug)}
+                        onContextMenu={(e) => {
+                          e.preventDefault();
+                          setExpandedCategory(expandedCategory === category.slug ? null : category.slug);
+                        }}
+                        className={`w-full flex items-center justify-between p-3 rounded-md transition-colors group ${
+                          activeCategory === category.slug
+                            ? "bg-blue-50 border-l-4 border-blue-500"
+                            : "hover:bg-gray-50"
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          {category.icon && <span className="text-xl">{category.icon}</span>}
+                          <span className={`text-sm font-medium ${
+                            activeCategory === category.slug
+                              ? "text-blue-700"
+                              : "text-gray-700 group-hover:text-gray-900"
+                          }`}>
+                            {category.name}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          {category.subcategories && category.subcategories.length > 0 && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setExpandedCategory(expandedCategory === category.slug ? null : category.slug);
+                              }}
+                              className="p-1 hover:bg-gray-200 rounded transition-colors"
+                            >
+                              <ChevronDown 
+                                className={`w-4 h-4 transition-transform ${
+                                  expandedCategory === category.slug ? "rotate-180" : ""
+                                } text-gray-400 group-hover:text-gray-600`} 
+                              />
+                            </button>
+                          )}
+                        </div>
+                      </button>
+                      
+                      {/* Subcategories dropdown */}
+                      {category.subcategories && category.subcategories.length > 0 && expandedCategory === category.slug && (
+                        <div className="ml-8 mt-1 space-y-1">
+                          {category.subcategories.map((subcategory, index) => (
+                            <Link
+                              key={index}
+                              href={subcategory.href}
+                              className={`block w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                                activeCategory === subcategory.label
+                                  ? "text-blue-700 bg-blue-50 font-medium"
+                                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                              }`}
+                            >
+                              {subcategory.label}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))
+                ) : (
+                  <div className="p-4 text-center text-gray-500 text-sm">
+                    No categories available
+                  </div>
+                )}
+>>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
               </div>
             </div>
 

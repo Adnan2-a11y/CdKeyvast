@@ -1,6 +1,10 @@
 import "server-only";
 
+<<<<<<< HEAD
 import { Product, ProductCategory } from "@/types/woocommerce";
+=======
+import { Product, ProductCategory, Coupon, CartItem, CategoryTreeNode, HeaderMenuCategory } from "@/types/woocommerce";
+>>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
 import { logger } from "@/lib/logger";
 
 // ─── Environment ────────────────────────────────────────────────────────────
@@ -227,13 +231,49 @@ function transformCategory(raw: Record<string, unknown>): ProductCategory {
     id: raw.id as number,
     name: raw.name as string,
     slug: raw.slug as string,
+<<<<<<< HEAD
+=======
+    parent: (raw.parent as number) || 0,
+>>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
     count: (raw.count as number) || 0,
   };
 }
 
+<<<<<<< HEAD
 // ─── Public API ────────────────────────────────────────────────────────────
 // These functions run ONLY on the server (enforced by `server-only` import).
 // Next.js `fetch` with `next.revalidate` handles ISR caching automatically.
+=======
+function transformCoupon(raw: Record<string, unknown>): Coupon {
+  return {
+    id: raw.id as number,
+    code: raw.code as string,
+    discount_type: (raw.discount_type as string) as Coupon["discount_type"],
+    amount: String(raw.amount || "0"),
+    description: (raw.description as string) || undefined,
+    date_expires: (raw.date_expires as string) || null,
+    usage_limit: (raw.usage_limit as number) || null,
+    usage_limit_per_user: (raw.usage_limit_per_user as number) || null,
+    used_by: ((raw.used_by as string[]) || []),
+    usage_count: (raw.usage_count as number) || 0,
+    enable_free_shipping: (raw.free_shipping as boolean) || false,
+    exclude_sale_items: (raw.exclude_sale_items as boolean) || false,
+    minimum_amount: (raw.minimum_amount as string) || undefined,
+    maximum_amount: (raw.maximum_amount as string) || undefined,
+    product_ids: ((raw.product_ids as number[]) || []),
+    excluded_product_ids: ((raw.excluded_product_ids as number[]) || []),
+    product_categories: ((raw.product_categories as number[]) || []),
+    excluded_product_categories: ((raw.excluded_product_categories as number[]) || []),
+    status: ((raw.status as string) || "publish") as "publish" | "draft",
+  };
+}
+
+// ─── Public API ────────────────────────────────────────────────────────────
+/**
+ * These functions run ONLY on the server (enforced by `server-only` import).
+ * Next.js `fetch` with `next.revalidate` handles ISR caching automatically.
+ */
+>>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
 
 /**
  * Fetch products with filtering, sorting, and pagination.
@@ -290,8 +330,12 @@ export async function getProducts(params?: {
     return { products, total: result.total || products.length };
   } catch (error) {
     logger.error("getProducts", "Failed to fetch products", error);
+<<<<<<< HEAD
     //return { products: [], total: 0 };
     throw new Error("Unable to load products.Please check your connection or try again later.");
+=======
+    throw new Error("Unable to load products. Please check your connection or try again later.");
+>>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
   }
 }
 
@@ -316,7 +360,10 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
     }
 
     logger.warn("getProductBySlug", `No product found for slug="${slug}"`);
+<<<<<<< HEAD
     //return null;
+=======
+>>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
     throw new Error("PRODUCT_NOT_FOUND");
   } catch (error) {
     logger.error("getProductBySlug", "Failed", error);
@@ -348,6 +395,7 @@ export async function getCategories(): Promise<ProductCategory[]> {
   }
 }
 
+<<<<<<< HEAD
 /**
  * Fetch top product slugs for `generateStaticParams`.
  * Used at build time only.
@@ -360,3 +408,353 @@ export async function getTopProductSlugs(limit = 50): Promise<string[]> {
     return [];
   }
 }
+=======
+export function buildCategoryTree(categories: ProductCategory[]): CategoryTreeNode[] {
+  const nodesById = new Map<number, CategoryTreeNode>();
+  for (const c of categories) {
+    nodesById.set(c.id, {
+      id: c.id,
+      name: c.name,
+      slug: c.slug,
+      parent: c.parent,
+      count: c.count,
+      children: [],
+    });
+  }
+
+  const roots: CategoryTreeNode[] = [];
+  nodesById.forEach((node) => {
+    const parentId = node.parent || 0;
+    if (parentId && nodesById.has(parentId)) {
+      nodesById.get(parentId)!.children.push(node);
+    } else {
+      roots.push(node);
+    }
+  });
+
+  return roots;
+}
+
+export function categoryTreeToHeaderMenu(
+  tree: CategoryTreeNode[],
+  options?: {
+    categoryHref?: (slug: string) => string;
+    subcategoryHref?: (slug: string) => string;
+  }
+): HeaderMenuCategory[] {
+  const categoryHref = options?.categoryHref ?? ((slug) => `/products?category=${encodeURIComponent(slug)}`);
+  const subcategoryHref = options?.subcategoryHref ?? ((slug) => `/products?category=${encodeURIComponent(slug)}`);
+
+  return tree.map((parent) => ({
+    label: parent.name,
+    href: categoryHref(parent.slug),
+    children: parent.children.map((child) => ({
+      label: child.name,
+      href: subcategoryHref(child.slug),
+    })),
+  }));
+}
+
+export async function getHeaderMenuCategories(): Promise<HeaderMenuCategory[]> {
+  const categories = await getCategories();
+  const tree = buildCategoryTree(categories);
+  return categoryTreeToHeaderMenu(tree);
+}
+
+/**
+ * Fetch coupon by code from WooCommerce
+ * Returns null if not found or invalid
+ */
+export async function getCouponByCode(code: string): Promise<Coupon | null> {
+  try {
+    logger.debug("getCouponByCode", `Fetching coupon: ${code}`);
+
+    const result = await wcFetch<Record<string, unknown>[]>({
+      endpoint: "/wp-json/wc/v3/coupons",
+      params: { search: code, per_page: "1" },
+      revalidate: false, // Coupons change frequently, don't cache
+    });
+
+    if (result.data.length === 0) {
+      logger.warn("getCouponByCode", `Coupon not found: ${code}`);
+      return null;
+    }
+
+    const coupon = transformCoupon(result.data[0]);
+
+    // Validate coupon is active
+    if (coupon.status !== "publish") {
+      logger.warn("getCouponByCode", `Coupon inactive: ${code}`);
+      return null;
+    }
+
+    logger.info("getCouponByCode", `Found coupon: ${code}`);
+    return coupon;
+  } catch (error) {
+    logger.error("getCouponByCode", `Failed to fetch coupon ${code}`, error);
+    return null;
+  }
+}
+
+/**
+ * Get all active coupons from WooCommerce
+ */
+export async function getActiveCoupons(): Promise<Coupon[]> {
+  try {
+    logger.debug("getActiveCoupons", "Fetching all active coupons");
+
+    const now = new Date().toISOString();
+
+    const result = await wcFetch<Record<string, unknown>[]>({
+      endpoint: "/wp-json/wc/v3/coupons",
+      params: {
+        per_page: "100",
+        status: "publish",
+        _order: "desc",
+        _orderby: "date",
+      },
+      revalidate: 300, // Cache for 5 minutes
+      fetchAll: false,
+    });
+
+    const coupons = result.data
+      .map(transformCoupon)
+      .filter((c) => {
+        // Filter expired coupons
+        if (c.date_expires && new Date(c.date_expires) < new Date(now)) {
+          return false;
+        }
+        return true;
+      });
+
+    logger.info("getActiveCoupons", `Returned ${coupons.length} active coupons`);
+    return coupons;
+  } catch (error) {
+    logger.error("getActiveCoupons", "Failed to fetch coupons", error);
+    return [];
+  }
+}
+
+/**
+ * Advanced coupon validation with full restriction checking
+ * Server-side validation for security
+ * 
+ * Validates:
+ * - Coupon existence and status
+ * - Expiry date
+ * - Usage limits
+ * - Minimum/maximum spend
+ * - Product restrictions
+ * - Category restrictions
+ * 
+ * Returns detailed validation result with discount calculation
+ */
+export async function validateCoupon(
+  code: string,
+  cartItems: CartItem[],
+  cartTotal: number
+): Promise<{ valid: boolean; coupon?: Coupon; discount?: number; error?: string; reason?: string }> {
+  try {
+    // Input validation
+    if (!code || code.trim() === "") {
+      return { valid: false, error: "Coupon code is required", reason: "empty_code" };
+    }
+
+    if (!Array.isArray(cartItems) || cartItems.length === 0) {
+      return { valid: false, error: "Cart is empty", reason: "empty_cart" };
+    }
+
+    if (typeof cartTotal !== "number" || cartTotal <= 0) {
+      return { valid: false, error: "Invalid cart total", reason: "invalid_total" };
+    }
+
+    logger.debug("validateCoupon", `Starting validation`, {
+      code,
+      cartTotal,
+      cartItemsCount: cartItems.length,
+    });
+
+    // Fetch coupon from WooCommerce
+    const coupon = await getCouponByCode(code);
+
+    if (!coupon) {
+      logger.warn("validateCoupon", `Coupon not found: ${code}`);
+      return { valid: false, error: "Coupon code does not exist", reason: "not_found" };
+    }
+
+    logger.debug("validateCoupon", `Coupon found: ${code}`, {
+      discount_type: coupon.discount_type,
+      amount: coupon.amount,
+      status: coupon.status,
+    });
+
+    // Check if coupon is published
+    if (coupon.status !== "publish") {
+      logger.warn("validateCoupon", `Coupon not published: ${code} | Status: ${coupon.status}`);
+      return { valid: false, coupon, error: "This coupon is no longer active", reason: "inactive" };
+    }
+
+    // Check expiry date
+    if (coupon.date_expires) {
+      const now = new Date();
+      const expiryDate = new Date(coupon.date_expires);
+      
+      if (expiryDate < now) {
+        logger.warn("validateCoupon", `Coupon expired: ${code}`);
+        return { 
+          valid: false, 
+          coupon, 
+          error: `This coupon expired on ${expiryDate.toLocaleDateString()}`,
+          reason: "expired"
+        };
+      }
+    }
+
+    // Check usage limit
+    if (coupon.usage_limit && coupon.usage_count >= coupon.usage_limit) {
+      logger.warn("validateCoupon", `Usage limit exceeded: ${code}`);
+      return { 
+        valid: false, 
+        coupon, 
+        error: "This coupon has reached its usage limit", 
+        reason: "usage_limit"
+      };
+    }
+
+    // Check minimum cart amount
+    if (coupon.minimum_amount) {
+      const minAmount = parseFloat(coupon.minimum_amount);
+      if (cartTotal < minAmount) {
+        logger.warn("validateCoupon", `Below minimum spend: ${code} | Cart: $${cartTotal} | Min: $${minAmount}`);
+        return {
+          valid: false,
+          coupon,
+          error: `Minimum order value of $${minAmount.toFixed(2)} required`,
+          reason: "minimum_spend",
+        };
+      }
+    }
+
+    // Check maximum cart amount
+    // ⚠️ IMPORTANT: maximum_amount of null/empty/"0" means no restriction
+    if (coupon.maximum_amount && coupon.maximum_amount !== "0" && coupon.maximum_amount !== "") {
+      const maxAmount = parseFloat(coupon.maximum_amount);
+      if (maxAmount > 0 && cartTotal > maxAmount) {
+        logger.warn("validateCoupon", `Exceeds maximum spend: ${code} | Cart: $${cartTotal} | Max: $${maxAmount}`);
+        return {
+          valid: false,
+          coupon,
+          error: `Order total cannot exceed $${maxAmount.toFixed(2)} for this coupon`,
+          reason: "maximum_spend",
+        };
+      }
+    }
+
+    // Check product restrictions
+    if (coupon.product_ids && coupon.product_ids.length > 0) {
+      const cartProductIds = cartItems.map(item => item.product.id);
+      const hasAllowedProduct = cartProductIds.some(id => coupon.product_ids?.includes(id));
+
+      if (!hasAllowedProduct) {
+        logger.warn("validateCoupon", `Product not in allowed list: ${code}`);
+        return {
+          valid: false,
+          coupon,
+          error: "This coupon is not valid for the products in your cart",
+          reason: "product_restriction",
+        };
+      }
+    }
+
+    // Check excluded products
+    if (coupon.excluded_product_ids && coupon.excluded_product_ids.length > 0) {
+      const cartProductIds = cartItems.map(item => item.product.id);
+      const hasExcludedProduct = cartProductIds.some(id => coupon.excluded_product_ids?.includes(id));
+
+      if (hasExcludedProduct) {
+        logger.warn("validateCoupon", `Excluded product in cart: ${code}`);
+        return {
+          valid: false,
+          coupon,
+          error: "This coupon cannot be applied to some items in your cart",
+          reason: "product_restriction",
+        };
+      }
+    }
+
+    // Check category restrictions
+    if (coupon.product_categories && coupon.product_categories.length > 0) {
+      const cartCategoryIds = cartItems.flatMap(item => 
+        item.product.categories?.map(cat => cat.id) || []
+      );
+      const hasAllowedCategory = cartCategoryIds.some(id => coupon.product_categories?.includes(id));
+
+      if (!hasAllowedCategory) {
+        logger.warn("validateCoupon", `No matching category: ${code}`);
+        return {
+          valid: false,
+          coupon,
+          error: "This coupon is not valid for your product categories",
+          reason: "category_restriction",
+        };
+      }
+    }
+
+    // Check excluded categories
+    if (coupon.excluded_product_categories && coupon.excluded_product_categories.length > 0) {
+      const cartCategoryIds = cartItems.flatMap(item =>
+        item.product.categories?.map(cat => cat.id) || []
+      );
+      const hasExcludedCategory = cartCategoryIds.some(id => coupon.excluded_product_categories?.includes(id));
+
+      if (hasExcludedCategory) {
+        logger.warn("validateCoupon", `Excluded category in cart: ${code}`);
+        return {
+          valid: false,
+          coupon,
+          error: "This coupon cannot be applied to some product categories",
+          reason: "category_restriction",
+        };
+      }
+    }
+
+    // Calculate discount based on type
+    let discount = 0;
+    if (coupon.discount_type === "percent") {
+      const percentage = parseFloat(coupon.amount) / 100;
+      discount = cartTotal * percentage;
+      logger.debug("validateCoupon", `Percent discount calculated`, {
+        percentage: coupon.amount,
+        cartTotal,
+        discount: discount.toFixed(2),
+      });
+    } else if (coupon.discount_type === "fixed_cart") {
+      discount = parseFloat(coupon.amount);
+      logger.debug("validateCoupon", `Fixed cart discount`, { discount: discount.toFixed(2) });
+    } else {
+      // fixed_product - discount per item quantity
+      const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+      discount = parseFloat(coupon.amount) * totalQuantity;
+      logger.debug("validateCoupon", `Fixed per-item discount`, {
+        perItem: coupon.amount,
+        totalQuantity,
+        discount: discount.toFixed(2),
+      });
+    }
+
+    // Ensure discount doesn't exceed cart total
+    discount = Math.min(discount, cartTotal);
+
+    logger.info("validateCoupon", `✓ Validation successful: ${code}`, {
+      discountAmount: discount.toFixed(2),
+      cartTotal: cartTotal.toFixed(2),
+      finalTotal: (cartTotal - discount).toFixed(2),
+    });
+
+    return { valid: true, coupon, discount };
+  } catch (error) {
+    logger.error("validateCoupon", `Failed to validate coupon ${code}`, error);
+    return { valid: false, error: "Failed to validate coupon. Please try again.", reason: "server_error" };
+  }
+}
+>>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f

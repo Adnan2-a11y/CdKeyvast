@@ -6,10 +6,18 @@ import Link from "next/link";
 import { Lock, CreditCard, Shield, Zap, CheckCircle, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useCart } from "@/contexts/CartContext";
+<<<<<<< HEAD
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { createOrder, getPaymentGateways } from "@/lib/api/woocommerce.client";
 import { BillingAddress } from "@/types/woocommerce";
 import { toast } from "sonner";
+=======
+import { useCurrency } from "@/hooks/useCurrency";
+import { createOrder, getPaymentGateways } from "@/lib/api/woocommerce.client";
+import { BillingAddress } from "@/types/woocommerce";
+import { toast } from "sonner";
+import { CouponInput } from "@/components/CouponInput";
+>>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
 
 const gatewayIcons: Record<string, typeof CreditCard> = {
   stripe: CreditCard,
@@ -19,7 +27,11 @@ const gatewayIcons: Record<string, typeof CreditCard> = {
 };
 
 export default function CheckoutPage() {
+<<<<<<< HEAD
   const { items, total, clearCart } = useCart();
+=======
+  const { items, subtotal, finalTotal, discount, appliedCoupon, applyDiscount, removeDiscount } = useCart();
+>>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
   const { formatPrice } = useCurrency();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -47,6 +59,7 @@ export default function CheckoutPage() {
     setLoading(true);
     try {
       const gateway = gateways.find((g) => g.id === selectedPayment);
+<<<<<<< HEAD
       const order = await createOrder({
         billing,
         line_items: items.map((i) => ({ product_id: i.product.id, quantity: i.quantity })),
@@ -54,19 +67,67 @@ export default function CheckoutPage() {
         payment_method_title: gateway?.title || selectedPayment,
       });
       clearCart();
+=======
+      
+      // Log order creation details for debugging
+      console.log("📋 Creating order with:", {
+        items_count: items.length,
+        subtotal,
+        discount,
+        finalTotal,
+        applied_coupon: appliedCoupon,
+      });
+
+      // ✅ FIX: Include coupon_lines in the order payload
+      const order = await createOrder({
+        billing,
+        line_items: items.map((i) => ({ product_id: i.product.id, quantity: i.quantity })),
+        coupon_lines: appliedCoupon 
+          ? [{ code: appliedCoupon }]  // Include coupon code
+          : [],                         // No coupon
+        payment_method: selectedPayment,
+        payment_method_title: gateway?.title || selectedPayment,
+      });
+
+      console.log("✅ Order created successfully:", { 
+        order_id: order.id,
+        order_total: order.total,
+      });
+
+      // Clear cart, discount, and coupon when order is placed
+      removeDiscount();
+      
+>>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
       const offlineGateways = ["cod", "bacs", "cheque"];
       if (offlineGateways.includes(selectedPayment)) {
         toast.success("Order placed successfully!");
         router.push("/success");
       } else if (order.payment_url && order.payment_url.startsWith("http")) {
         toast.success("Redirecting to payment...");
+<<<<<<< HEAD
         window.location.href = order.payment_url;
+=======
+        // Capture payment URL before async operation to preserve type safety
+        const paymentUrl = order.payment_url;
+        setTimeout(() => {
+          if (typeof window !== "undefined") {
+            window.location.href = paymentUrl;
+          }
+        }, 100);
+>>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
       } else {
         toast.success("Order placed successfully!");
         router.push("/success");
       }
+<<<<<<< HEAD
     } catch {
       toast.error("Something went wrong. Please try again.");
+=======
+    } catch (error) {
+      console.error("❌ Order creation failed:", error);
+      const errorMsg = error instanceof Error ? error.message : "Something went wrong";
+      toast.error(errorMsg || "Please try again.");
+>>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
     } finally {
       setLoading(false);
     }
@@ -153,6 +214,25 @@ export default function CheckoutPage() {
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="lg:col-span-2">
           <div className="sticky top-28 rounded-lg border border-border bg-card p-6">
             <h3 className="mb-4 font-display text-sm font-bold uppercase tracking-wider text-foreground">Order Summary</h3>
+<<<<<<< HEAD
+=======
+
+            {/* Coupon Input Component */}
+            <div className="mb-6">
+              <CouponInput
+                items={items}
+                cartTotal={subtotal}
+                onCouponApplied={(discountAmount) => {
+                  // Note: The actual coupon code is handled inside CouponInput
+                  // This callback is for custom logic if needed
+                }}
+                onCouponRemoved={() => {
+                  removeDiscount();
+                }}
+              />
+            </div>
+
+>>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
             <div className="mb-4 max-h-60 space-y-3 overflow-y-auto pr-1">
               {items.map(({ product, quantity }) => (
                 <div key={product.id} className="flex items-start gap-3">
@@ -169,13 +249,30 @@ export default function CheckoutPage() {
               ))}
             </div>
             <div className="space-y-2 border-t border-border pt-4 text-sm">
+<<<<<<< HEAD
               <div className="flex justify-between text-muted-foreground"><span>Subtotal</span><span className="text-foreground">{formatPrice(total)}</span></div>
+=======
+              <div className="flex justify-between text-muted-foreground"><span>Subtotal</span><span className="text-foreground">{formatPrice(subtotal)}</span></div>
+              {discount > 0 && (
+                <div className="flex justify-between text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    Discount
+                    {appliedCoupon && <span className="rounded bg-green-100 px-1.5 py-0.5 text-[10px] font-semibold text-green-700">{appliedCoupon}</span>}
+                  </span>
+                  <span className="font-medium text-red-600">-{formatPrice(discount)}</span>
+                </div>
+              )}
+>>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
               <div className="flex justify-between text-muted-foreground"><span>Delivery</span><span className="font-medium text-price-green">Instant / Free</span></div>
             </div>
             <div className="my-4 border-t border-border" />
             <div className="mb-4 flex items-center justify-between">
               <span className="font-semibold text-foreground">Total</span>
+<<<<<<< HEAD
               <span className="price-glow font-display text-2xl font-bold text-price-green">{formatPrice(total)}</span>
+=======
+              <span className="price-glow font-display text-2xl font-bold text-price-green">{formatPrice(finalTotal)}</span>
+>>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
             </div>
             <button type="submit" disabled={loading || !selectedPayment}
               className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3.5 font-display text-sm font-bold uppercase tracking-wider text-primary-foreground transition-all hover:neon-glow disabled:opacity-50">

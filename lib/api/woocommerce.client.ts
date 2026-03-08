@@ -1,7 +1,11 @@
 "use client";
 
 import { supabase } from "@/lib/supabase/client";
+<<<<<<< HEAD
 import { Order, CreateOrderPayload } from "@/types/woocommerce";
+=======
+import { Order, CreateOrderPayload, ApplyCouponPayload, CouponValidationResult, Coupon, ApplyCouponResponse } from "@/types/woocommerce";
+>>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
 
 // Client-side proxy helper — WC keys never leave the Supabase Edge Function
 async function wcProxy<T>(payload: {
@@ -100,3 +104,75 @@ export async function registerUser(_data: {
 }): Promise<{ token: string }> {
   return { token: "mock-jwt-token" };
 }
+<<<<<<< HEAD
+=======
+// ──────────────── COUPON SYSTEM ────────────────
+
+/**
+ * Validate and apply coupon to cart
+ * Calls server-side API for security
+ */
+export async function applyCoupon(payload: ApplyCouponPayload): Promise<ApplyCouponResponse> {
+  try {
+    const response = await fetch("/api/coupons/apply", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      return {
+        success: false,
+        coupon_code: payload.coupon_code,
+        discount_amount: 0,
+        discount_type: "fixed_cart",
+        new_total: payload.cart_total,
+        error: error.error || "Failed to apply coupon",
+      };
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("applyCoupon error:", error);
+    return {
+      success: false,
+      coupon_code: payload.coupon_code,
+      discount_amount: 0,
+      discount_type: "fixed_cart",
+      new_total: payload.cart_total,
+      error: "Failed to apply coupon",
+    };
+  }
+}
+
+/**
+ * Get coupon by code (server-side validation)
+ */
+export async function getCouponByCode(code: string): Promise<Coupon | null> {
+  try {
+    const response = await fetch(`/api/coupons/validate?code=${encodeURIComponent(code)}`);
+    if (!response.ok) return null;
+    const data = await response.json();
+    return data.coupon || null;
+  } catch (error) {
+    console.error("getCouponByCode error:", error);
+    return null;
+  }
+}
+
+/**
+ * Get all active coupons (for reference/promotional display)
+ */
+export async function getActiveCoupons(): Promise<Coupon[]> {
+  try {
+    const response = await fetch("/api/coupons/list");
+    if (!response.ok) return [];
+    const data = await response.json();
+    return data.coupons || [];
+  } catch (error) {
+    console.error("getActiveCoupons error:", error);
+    return [];
+  }
+}
+>>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f

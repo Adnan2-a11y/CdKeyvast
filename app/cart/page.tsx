@@ -5,7 +5,11 @@ import Link from "next/link";
 import { Minus, Plus, X, ArrowLeft, ShoppingBag, Tag } from "lucide-react";
 import { motion } from "framer-motion";
 import { useCart } from "@/contexts/CartContext";
+<<<<<<< HEAD
 import { useCurrency } from "@/contexts/CurrencyContext";
+=======
+import { useCurrency } from "@/hooks/useCurrency";
+>>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
 
 export default function CartPage() {
   const { items, total, removeItem, updateQuantity, clearCart } = useCart();

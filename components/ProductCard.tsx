@@ -3,7 +3,11 @@
 import { motion } from "framer-motion";
 import { ShoppingCart, Star } from "lucide-react";
 import Link from "next/link";
+<<<<<<< HEAD
 import { useCurrency } from "@/contexts/CurrencyContext";
+=======
+import { useCurrency } from "@/hooks/useCurrency";
+>>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
 
 interface ProductCardProps {
   title: string;
@@ -61,13 +65,17 @@ const ProductCard = ({
               src={brandImage}
               alt={brandName || "Brand"}
               className="h-full w-full object-contain"
+<<<<<<< HEAD
               onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+=======
+>>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
             />
           </div>
         )}
         
         {/* Product Image */}
         <div className="mx-auto h-40 w-40">
+<<<<<<< HEAD
           {image ? (
             <img
               src={image}
@@ -86,6 +94,13 @@ const ProductCard = ({
               <span className="text-xs text-gray-400">No Image</span>
             </div>
           )}
+=======
+          <img
+            src={image}
+            alt={title}
+            className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
+          />
+>>>>>>> e1283bb809bb53b93b8b93f3223fad6fb746f45f
         </div>
       </div>
 
