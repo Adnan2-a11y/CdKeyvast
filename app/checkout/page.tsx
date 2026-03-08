@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Lock, CreditCard, Shield, Zap, CheckCircle, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useCart } from "@/contexts/CartContext";
@@ -20,7 +21,7 @@ const gatewayIcons: Record<string, typeof CreditCard> = {
 };
 
 export default function CheckoutPage() {
-  const { items, subtotal, finalTotal, discount, appliedCoupon, applyDiscount, removeDiscount } = useCart();
+  const { items, subtotal, finalTotal, discount, appliedCoupon, removeDiscount } = useCart();
   const { formatPrice } = useCurrency();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -190,7 +191,7 @@ export default function CheckoutPage() {
               <CouponInput
                 items={items}
                 cartTotal={subtotal}
-                onCouponApplied={(discountAmount) => {
+                onCouponApplied={() => {
                   // Note: The actual coupon code is handled inside CouponInput
                   // This callback is for custom logic if needed
                 }}
@@ -204,7 +205,13 @@ export default function CheckoutPage() {
               {items.map(({ product, quantity }) => (
                 <div key={product.id} className="flex items-start gap-3">
                   <div className="relative shrink-0">
-                    <img src={product.images[0]?.src} alt="" className="h-14 w-10 rounded object-cover" />
+                    <Image
+                      src={product.images[0]?.src || "/placeholder.svg"}
+                      alt={`${product.name} thumbnail`}
+                      width={40}
+                      height={56}
+                      className="h-14 w-10 rounded object-cover"
+                    />
                     <span className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] font-bold text-primary-foreground">{quantity}</span>
                   </div>
                   <div className="min-w-0 flex-1">

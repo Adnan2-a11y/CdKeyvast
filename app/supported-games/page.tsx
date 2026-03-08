@@ -45,7 +45,7 @@ export default function SupportedGamesPage() {
               <div className="text-center mb-12">
                 <p className="text-xl leading-relaxed max-w-3xl mx-auto">
                   CDKeyVast supports thousands of games across all major gaming platforms. 
-                  Whether you're a console gamer, PC enthusiast, or mobile player, we have the digital codes you need.
+                  Whether you&apos;re a console gamer, PC enthusiast, or mobile player, we have the digital codes you need.
                 </p>
               </div>
 
@@ -144,7 +144,7 @@ export default function SupportedGamesPage() {
                 <div className="bg-blue-50 rounded-lg p-6">
                   <p className="mb-4">
                     Game availability may vary by region due to platform restrictions and licensing agreements. 
-                    Here's what you need to know:
+                    Here&apos;s what you need to know:
                   </p>
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>

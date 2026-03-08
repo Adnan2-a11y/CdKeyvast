@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, ChevronRight, ShoppingCart, Star, Tag, ChevronDown } from "lucide-react";
+import { Search, Tag, ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";

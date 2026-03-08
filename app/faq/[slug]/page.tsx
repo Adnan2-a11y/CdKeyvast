@@ -23,7 +23,7 @@ export default function FAQDynamicPage({ params }: FAQPageProps) {
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="bg-white rounded-lg shadow-md p-6 text-center">
             <h1 className="text-2xl font-bold text-gray-800 mb-4">FAQ Not Found</h1>
-            <p className="text-gray-600 mb-6">The FAQ page you're looking for doesn't exist.</p>
+            <p className="text-gray-600 mb-6">The FAQ page you&apos;re looking for doesn&apos;t exist.</p>
             <Link 
               href="/faq" 
               className="inline-block bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 transition-colors"
@@ -73,7 +73,7 @@ export default function FAQDynamicPage({ params }: FAQPageProps) {
               <p className="text-gray-600 leading-relaxed">
                 Our dedicated customer support team is available 24/7 to help you with any questions 
                 or issues. Whether you need help with your order or have questions about our products, 
-                we're here to help.
+                we&apos;re here to help.
               </p>
             </section>
           </div>
@@ -88,7 +88,7 @@ export default function FAQDynamicPage({ params }: FAQPageProps) {
               <h3 className="text-lg font-semibold text-gray-800 mb-3">Step-by-Step Guide</h3>
               <ol className="list-decimal list-inside space-y-3 text-gray-600">
                 <li>Visit the official website of the gaming platform (PlayStation, Xbox, Nintendo, etc.)</li>
-                <li>Click on "Sign Up" or "Create Account" button</li>
+                <li>Click on &quot;Sign Up&quot; or &quot;Create Account&quot; button</li>
                 <li>Fill in your personal information including email address and password</li>
                 <li>Verify your email address by clicking the verification link sent to your email</li>
                 <li>Complete your profile with additional information if required</li>
@@ -130,7 +130,7 @@ export default function FAQDynamicPage({ params }: FAQPageProps) {
                   <h4 className="font-semibold text-gray-700 mb-2">PlayStation Network</h4>
                   <ol className="list-decimal list-inside space-y-1 text-gray-600 text-sm">
                     <li>Go to PlayStation Store</li>
-                    <li>Select "Redeem Codes" from the menu</li>
+                    <li>Select &quot;Redeem Codes&quot; from the menu</li>
                     <li>Enter your 12-digit code</li>
                     <li>Confirm and add funds to your wallet</li>
                   </ol>
@@ -141,7 +141,7 @@ export default function FAQDynamicPage({ params }: FAQPageProps) {
                   <ol className="list-decimal list-inside space-y-1 text-gray-600 text-sm">
                     <li>Press the Xbox button on your controller</li>
                     <li>Navigate to Store</li>
-                    <li>Select "Use a code"</li>
+                    <li>Select &quot;Use a code&quot;</li>
                     <li>Enter your 25-character code</li>
                   </ol>
                 </div>
@@ -150,7 +150,7 @@ export default function FAQDynamicPage({ params }: FAQPageProps) {
                   <h4 className="font-semibold text-gray-700 mb-2">Nintendo eShop</h4>
                   <ol className="list-decimal list-inside space-y-1 text-gray-600 text-sm">
                     <li>Open Nintendo eShop</li>
-                    <li>Select "Enter Code"</li>
+                    <li>Select &quot;Enter Code&quot;</li>
                     <li>Enter your 16-character code</li>
                     <li>Confirm redemption</li>
                   </ol>
@@ -160,8 +160,8 @@ export default function FAQDynamicPage({ params }: FAQPageProps) {
                   <h4 className="font-semibold text-gray-700 mb-2">Steam</h4>
                   <ol className="list-decimal list-inside space-y-1 text-gray-600 text-sm">
                     <li>Open Steam client</li>
-                    <li>Click "Games" in the top menu</li>
-                    <li>Select "Activate a Product on Steam"</li>
+                    <li>Click &quot;Games&quot; in the top menu</li>
+                    <li>Select &quot;Activate a Product on Steam&quot;</li>
                     <li>Follow the prompts and enter your code</li>
                   </ol>
                 </div>
@@ -173,8 +173,8 @@ export default function FAQDynamicPage({ params }: FAQPageProps) {
               <ul className="list-disc list-inside space-y-2 text-gray-600">
                 <li>Gift cards have no expiration date unless otherwise specified</li>
                 <li>Codes can only be used once</li>
-                <li>Keep your codes secure and don't share them with others</li>
-                <li>Make sure you're redeeming the code on the correct platform</li>
+                <li>Keep your codes secure and don&apos;t share them with others</li>
+                <li>Make sure you&apos;re redeeming the code on the correct platform</li>
                 <li>Contact support if you encounter any issues during redemption</li>
               </ul>
             </section>
@@ -202,7 +202,7 @@ export default function FAQDynamicPage({ params }: FAQPageProps) {
                 <li>Payment confirmation is processed automatically</li>
                 <li>Digital codes are generated and sent to your email</li>
                 <li>Delivery typically takes 1-5 minutes</li>
-                <li>You'll receive a confirmation email with your codes</li>
+                <li>You&apos;ll receive a confirmation email with your codes</li>
               </ol>
             </section>
             
@@ -218,8 +218,8 @@ export default function FAQDynamicPage({ params }: FAQPageProps) {
             <section>
               <h3 className="text-lg font-semibold text-gray-800 mb-3">Delivery Issues</h3>
               <p className="text-gray-600 leading-relaxed">
-                If you don't receive your codes within 10 minutes of purchase, please check your 
-                spam folder. If you still can't find your codes, contact our 24/7 customer support 
+                If you don&apos;t receive your codes within 10 minutes of purchase, please check your 
+                spam folder. If you still can&apos;t find your codes, contact our 24/7 customer support 
                 team for immediate assistance.
               </p>
             </section>
@@ -342,7 +342,7 @@ export default function FAQDynamicPage({ params }: FAQPageProps) {
               <h3 className="text-lg font-semibold text-gray-800 mb-3">Delivery Method</h3>
               <p className="text-gray-600 leading-relaxed">
                 All gift cards and game cards are delivered digitally via email. After your 
-                payment is confirmed, you'll receive an email containing your digital codes 
+                payment is confirmed, you&apos;ll receive an email containing your digital codes 
                 and redemption instructions.
               </p>
             </section>
@@ -357,7 +357,7 @@ export default function FAQDynamicPage({ params }: FAQPageProps) {
             </section>
             
             <section>
-              <h3 className="text-lg font-semibold text-gray-800 mb-3">What You'll Receive</h3>
+              <h3 className="text-lg font-semibold text-gray-800 mb-3">What You&apos;ll Receive</h3>
               <p className="text-gray-600 leading-relaxed mb-3">
                 Your email will contain:
               </p>
@@ -372,8 +372,8 @@ export default function FAQDynamicPage({ params }: FAQPageProps) {
             <section>
               <h3 className="text-lg font-semibold text-gray-800 mb-3">Troubleshooting</h3>
               <p className="text-gray-600 leading-relaxed">
-                If you don't receive your email within 30 minutes, check your spam folder. 
-                If you still can't find it, contact our 24/7 customer support team with your 
+                If you don&apos;t receive your email within 30 minutes, check your spam folder. 
+                If you still can&apos;t find it, contact our 24/7 customer support team with your 
                 order number for immediate assistance.
               </p>
             </section>
@@ -414,7 +414,7 @@ export default function FAQDynamicPage({ params }: FAQPageProps) {
             <section>
               <h3 className="text-lg font-semibold text-gray-800 mb-3">Regional Considerations</h3>
               <p className="text-gray-600 leading-relaxed">
-                While US gaming cards offer many advantages, it's important to check regional 
+                While US gaming cards offer many advantages, it&apos;s important to check regional 
                 compatibility. Most digital content from US stores works globally, but some 
                 region-specific content may have restrictions.
               </p>

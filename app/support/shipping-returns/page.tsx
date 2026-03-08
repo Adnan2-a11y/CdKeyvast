@@ -34,7 +34,7 @@ export default function ShippingReturnsPage() {
                 <h3 className="text-xl font-semibold mb-2 text-gray-900">Incorrect Purchase</h3>
                 <p>
                   If you accidentally purchased the wrong product, please contact us within 1 hour of purchase. 
-                  We may be able to cancel the order if it hasn't been processed yet. Once the digital code has been 
+                  We may be able to cancel the order if it hasn&apos;t been processed yet. Once the digital code has been 
                   delivered, we cannot cancel or refund the order.
                 </p>
               </div>

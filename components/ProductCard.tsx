@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { ShoppingCart, Star } from "lucide-react";
 import Link from "next/link";
 import { useCurrency } from "@/hooks/useCurrency";
@@ -27,11 +28,8 @@ const ProductCard = ({
   image,
   brandImage,
   brandName,
-  deliveryMethod,
   price,
   originalPrice,
-  discount,
-  platform,
   slug,
   rating = 0,
   ratingCount = 0,
@@ -39,8 +37,6 @@ const ProductCard = ({
   onBuyNow,
 }: ProductCardProps) => {
   const { formatPrice } = useCurrency();
-
-  const hasDiscount = discount && discount > 0;
 
   return (
     <motion.div
@@ -57,20 +53,24 @@ const ProductCard = ({
       <div className="relative bg-gray-50 p-6">
         {brandImage && (
           <div className="absolute top-2 right-2 h-12 w-12 overflow-hidden rounded-lg bg-white p-2 shadow-sm">
-            <img
+            <Image
               src={brandImage}
               alt={brandName || "Brand"}
-              className="h-full w-full object-contain"
+              fill
+              sizes="48px"
+              className="object-contain"
             />
           </div>
         )}
         
         {/* Product Image */}
-        <div className="mx-auto h-40 w-40">
-          <img
+        <div className="relative mx-auto h-40 w-40">
+          <Image
             src={image}
             alt={title}
-            className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
+            fill
+            sizes="160px"
+            className="object-contain transition-transform duration-300 group-hover:scale-105"
           />
         </div>
       </div>

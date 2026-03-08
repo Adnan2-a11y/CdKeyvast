@@ -10,7 +10,7 @@ export default function TermsOfServicePage() {
               <div>
                 <h2 className="text-2xl font-bold mb-4 text-gray-900">1. Acceptance of Terms</h2>
                 <p>
-                  By accessing and using Cd Key Vast ("the Service"), you accept and agree to be bound 
+                  By accessing and using Cd Key Vast (&quot;the Service&quot;), you accept and agree to be bound 
                   by the terms and provision of this agreement. If you do not agree to abide by the above, 
                   please do not use this service.
                 </p>
@@ -145,7 +145,7 @@ export default function TermsOfServicePage() {
                   You agree to defend, indemnify, and hold harmless Cd Key Vast and its licensee and 
                   licensors, and their employees, contractors, agents, officers and directors, from and against 
                   any and all claims, damages, obligations, losses, liabilities, costs or debt, and expenses 
-                  (including but not limited to attorney's fees).
+                  (including but not limited to attorney&​apos;s fees).
                 </p>
               </div>
 

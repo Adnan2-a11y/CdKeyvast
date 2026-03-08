@@ -4,11 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { 
   Gamepad2, 
-  Gift, 
   Monitor, 
-  CreditCard, 
-  ShoppingBag, 
-  Smartphone,
   Apple,
   Coins
 } from "lucide-react";

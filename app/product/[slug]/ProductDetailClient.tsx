@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeft, ShoppingCart, Star, Shield, Zap, Tag } from "lucide-react";
 import { motion } from "framer-motion";
 import { useCart } from "@/contexts/CartContext";
@@ -75,11 +75,13 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
           animate={{ opacity: 1, x: 0 }}
           className="relative overflow-hidden rounded-lg border border-border lg:col-span-1"
         >
-          <div className="aspect-square overflow-hidden rounded-lg">
-            <img
-              src={product.images[0]?.src}
-              alt={product.name}
-              className="h-full w-full object-cover"
+          <div className="relative aspect-square overflow-hidden rounded-lg">
+            <Image
+              src={product.images[0]?.src || "/placeholder.svg"}
+              alt={`${product.name} product image`}
+              fill
+              sizes="(min-width: 1024px) 33vw, 100vw"
+              className="object-cover"
             />
           </div>
           {discount > 0 && (

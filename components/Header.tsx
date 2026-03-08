@@ -21,11 +21,6 @@ interface DropdownProps {
   twoColumns?: boolean;
 }
 
-interface SimpleLinkProps {
-  href: string;
-  label: string;
-}
-
 export default function Header({ categories }: HeaderProps) {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const { itemCount } = useCart();

@@ -23,13 +23,13 @@ export default function PayPalPage() {
                     or game codes to your cart.
                   </li>
                   <li>
-                    <strong>Proceed to Checkout:</strong> Click on the cart icon and then "Proceed to Checkout".
+                    <strong>Proceed to Checkout:</strong> Click on the cart icon and then &quot;Proceed to Checkout&quot;.
                   </li>
                   <li>
                     <strong>Choose PayPal:</strong> Select PayPal as your payment method on the payment page.
                   </li>
                   <li>
-                    <strong>Redirect to PayPal:</strong> You'll be redirected to PayPal's secure checkout page.
+                    <strong>Redirect to PayPal:</strong> You&apos;ll be redirected to PayPal&apos;s secure checkout page.
                   </li>
                   <li>
                     <strong>Log In or Sign Up:</strong> Log in to your existing PayPal account or create a new one.
@@ -38,7 +38,7 @@ export default function PayPalPage() {
                     <strong>Confirm Payment:</strong> Review your order details and confirm the payment.
                   </li>
                   <li>
-                    <strong>Return to Our Store:</strong> After payment, you'll be redirected back to our site 
+                    <strong>Return to Our Store:</strong> After payment, you&apos;ll be redirected back to our site 
                     for order confirmation.
                   </li>
                 </ol>
@@ -66,7 +66,7 @@ export default function PayPalPage() {
                 <h3 className="text-xl font-semibold mb-3 text-gray-900">Security & Protection</h3>
                 <p>
                   PayPal offers buyer protection for eligible purchases. Your financial information is 
-                  never shared with merchants, and PayPal's encryption technology keeps your transactions secure.
+                  never shared with merchants, and PayPal&apos;s encryption technology keeps your transactions secure.
                 </p>
               </div>
 
@@ -89,7 +89,7 @@ export default function PayPalPage() {
                   <div className="bg-gray-50 p-4 rounded-md">
                     <h4 className="font-semibold text-gray-900">Account Verification</h4>
                     <p className="text-sm mt-1">
-                      Complete PayPal's verification process if your account is unverified to avoid payment issues.
+                      Complete PayPal&apos;s verification process if your account is unverified to avoid payment issues.
                     </p>
                   </div>
                 </div>
@@ -106,7 +106,7 @@ export default function PayPalPage() {
               <div>
                 <h3 className="text-xl font-semibold mb-3 text-gray-900">Refunds to PayPal</h3>
                 <p>
-                  If you're eligible for a refund, it will be processed back to your original PayPal 
+                  If you&apos;re eligible for a refund, it will be processed back to your original PayPal 
                   payment method. Refunds typically take 3-5 business days to appear in your PayPal account.
                 </p>
               </div>

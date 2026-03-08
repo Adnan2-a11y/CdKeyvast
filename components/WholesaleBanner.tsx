@@ -1,8 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Link from "next/link";
-import { ArrowRight, Gift, Gamepad2, ChevronDown, ChevronUp } from "lucide-react";
+import { Gift, Gamepad2, ChevronDown, ChevronUp } from "lucide-react";
 import Container from "@/components/ui/container";
 import { useState } from "react";
 
