@@ -39,6 +39,117 @@ interface WcResponse<T> {
   totalPages: number;
 }
 
+ type WcRetryOptions = {
+   retries: number;
+   baseDelayMs: number;
+   maxDelayMs: number;
+ };
+
+ // Rate limiting queue to prevent overwhelming the server
+ class RateLimiter {
+   private queue: Array<() => Promise<any>> = [];
+   private running = 0;
+   private maxConcurrent: number;
+   private delayBetweenRequests: number;
+
+   constructor(maxConcurrent: number = 2, delayBetweenRequests: number = 500) {
+     this.maxConcurrent = maxConcurrent;
+     this.delayBetweenRequests = delayBetweenRequests;
+   }
+
+   async execute<T>(task: () => Promise<T>): Promise<T> {
+     return new Promise((resolve, reject) => {
+       this.queue.push(async () => {
+         try {
+           const result = await task();
+           resolve(result);
+         } catch (error) {
+           reject(error);
+         }
+       });
+       this.process();
+     });
+   }
+
+   private async process() {
+     if (this.running >= this.maxConcurrent || this.queue.length === 0) {
+       return;
+     }
+
+     this.running++;
+     const task = this.queue.shift();
+     
+     if (task) {
+       try {
+         await task();
+       } finally {
+         this.running--;
+         // Add delay between requests
+         setTimeout(() => this.process(), this.delayBetweenRequests);
+       }
+     }
+   }
+ }
+
+ // Global rate limiter instance - configurable via environment variables
+ const maxConcurrent = parseInt(process.env.WC_MAX_CONCURRENT_REQUESTS || "2");
+ const delayBetweenRequests = parseInt(process.env.WC_DELAY_BETWEEN_REQUESTS || "500");
+ const rateLimiter = new RateLimiter(maxConcurrent, delayBetweenRequests);
+
+ function sleep(ms: number): Promise<void> {
+   return new Promise((resolve) => setTimeout(resolve, ms));
+ }
+
+ function isTransientHttpStatus(status: number): boolean {
+   return status === 429 || status === 502 || status === 503 || status === 504;
+ }
+
+ async function fetchWithRetry(
+   url: string,
+   fetchOptions: RequestInit & { next?: { revalidate: number | false } },
+   meta: { tag: string; method: string; pathname: string; search: string },
+   retryOptions?: Partial<WcRetryOptions>
+ ): Promise<Response> {
+   const opts: WcRetryOptions = {
+     retries: retryOptions?.retries ?? 5, // Increased retries for build time
+     baseDelayMs: retryOptions?.baseDelayMs ?? 500, // Increased base delay
+     maxDelayMs: retryOptions?.maxDelayMs ?? 8000, // Increased max delay
+   };
+
+   let attempt = 0;
+   // eslint-disable-next-line no-constant-condition
+   while (true) {
+     try {
+       const res = await fetch(url, fetchOptions);
+       if (!res.ok && isTransientHttpStatus(res.status) && attempt < opts.retries) {
+         const delay = Math.min(opts.maxDelayMs, opts.baseDelayMs * Math.pow(2, attempt));
+         logger.warn(meta.tag, `HTTP ${res.status} (transient) — retrying in ${delay}ms`, {
+           url: meta.pathname,
+           attempt: attempt + 1,
+           retries: opts.retries,
+         });
+         await sleep(delay);
+         attempt++;
+         continue;
+       }
+       return res;
+     } catch (error) {
+       if (attempt < opts.retries) {
+         const delay = Math.min(opts.maxDelayMs, opts.baseDelayMs * Math.pow(2, attempt));
+         logger.warn(meta.tag, `Fetch failed (network) — retrying in ${delay}ms`, {
+           url: meta.pathname,
+           attempt: attempt + 1,
+           retries: opts.retries,
+         });
+         await sleep(delay);
+         attempt++;
+         continue;
+       }
+       throw error;
+     }
+   }
+ }
+
 async function wcFetch<T>(options: WcFetchOptions): Promise<WcResponse<T>> {
   const {
     endpoint,
@@ -71,7 +182,15 @@ async function wcFetch<T>(options: WcFetchOptions): Promise<WcResponse<T>> {
     const started = Date.now();
     logger.debug("wc-fetch", `${method} ${url.pathname}${url.search}`);
 
-    const res = await fetch(url.toString(), fetchOptions);
+    // Wrap the fetch call with rate limiting
+    const res = await rateLimiter.execute(async () => {
+      return await fetchWithRetry(
+        url.toString(),
+        fetchOptions,
+        { tag: "wc-fetch", method, pathname: url.pathname, search: url.search },
+        { retries: 5, baseDelayMs: 500, maxDelayMs: 8000 }
+      );
+    });
 
     if (!res.ok) {
       const text = await res.text();
@@ -138,12 +257,23 @@ async function wcFetch<T>(options: WcFetchOptions): Promise<WcResponse<T>> {
       url.searchParams.set("per_page", "100");
       url.searchParams.set("page", String(page));
 
-      const res = await fetch(url.toString(), fetchOptions);
+      // Wrap each paginated request with rate limiting
+      const res = await rateLimiter.execute(async () => {
+        return await fetchWithRetry(
+          url.toString(),
+          fetchOptions,
+          { tag: "wc-fetch", method: "GET", pathname: url.pathname, search: url.search },
+          { retries: 5, baseDelayMs: 500, maxDelayMs: 8000 }
+        );
+      });
 
       // 1. Better Error Handling: Check for non-JSON responses (502/504 HTML)
       if (!res.ok) {
         const errorText = await res.text();
-        logger.error("wc-fetch", `Page ${page} failed: HTTP ${res.status}`, errorText.slice(0, 150));
+        logger.error("wc-fetch", `Page ${page} failed: HTTP ${res.status}`, {
+          url: url.pathname,
+          body: errorText.slice(0, 150),
+        });
         throw new Error(`WC_FETCH_ERROR: ${res.status}`);
       }
 
@@ -317,7 +447,7 @@ export async function getProducts(params?: {
     return { products, total: result.total || products.length };
   } catch (error) {
     logger.error("getProducts", "Failed to fetch products", error);
-    throw new Error("Unable to load products. Please check your connection or try again later.");
+    return { products: [], total: 0 };
   }
 }
 
@@ -347,7 +477,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
     logger.error("getProductBySlug", "Failed", error);
     if (error instanceof Error && error.message === "PRODUCT_NOT_FOUND") throw error;
 
-    throw new Error("Could not retrieve product details.");
+    return null;
   }
 }
 

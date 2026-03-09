@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ revalidated: true, path });
     }
     if (tag) {
-      revalidateTag(tag);
+      revalidateTag(tag, "max");
       return NextResponse.json({ revalidated: true, tag });
     }
     // Default: revalidate all product pages

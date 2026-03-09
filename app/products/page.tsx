@@ -28,10 +28,13 @@ export default async function ProductsPage() {
     getCategories(),
   ]);
 
+  const safeProducts = Array.isArray(products) ? products : [];
+  const safeCategories = Array.isArray(categories) ? categories : [];
+
   return (
     <div className="min-h-screen bg-background">
       <Suspense fallback={<ProductsLoading />}>
-        <ProductsClient initialProducts={products} initialCategories={categories} />
+        <ProductsClient initialProducts={safeProducts} initialCategories={safeCategories} />
       </Suspense>
     </div>
   );

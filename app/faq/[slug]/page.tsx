@@ -1,20 +1,39 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ChevronDown, Tag } from "lucide-react";
 import { faqItems, productCategories, type Category } from "@/lib/categories";
 
 interface FAQPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export default function FAQDynamicPage({ params }: FAQPageProps) {
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+  const [slug, setSlug] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true);
+  
+  // Handle async params
+  useEffect(() => {
+    params.then((resolvedParams) => {
+      setSlug(resolvedParams.slug);
+      setLoading(false);
+    });
+  }, [params]);
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-gray-600">Loading...</div>
+      </div>
+    );
+  }
+  
   const faqItem = faqItems.find(item => 
-    item.href === `/faq/${params.slug}`
+    item.href === `/faq/${slug}`
   );
 
   if (!faqItem) {
@@ -446,7 +465,7 @@ export default function FAQDynamicPage({ params }: FAQPageProps) {
     };
   };
 
-  const faqContent = getFAQContent(params.slug);
+  const faqContent = getFAQContent(slug);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -538,7 +557,7 @@ export default function FAQDynamicPage({ params }: FAQPageProps) {
                     <Link
                       href={item.href}
                       className={`block py-1 transition-colors ${
-                        item.href === `/faq/${params.slug}`
+                        item.href === `/faq/${slug}`
                           ? "text-red-600 font-semibold"
                           : "text-gray-700 hover:text-red-600"
                       }`}
