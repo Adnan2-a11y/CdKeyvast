@@ -1,25 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // Limit build worker concurrency to prevent overwhelming the API
+  
+  // Prevents build workers from crashing low-RAM environments
   experimental: {
     workerThreads: false,
+    cpus: 1
   },
-  // Configure Turbopack instead of webpack for Next.js 16
-  turbopack: {
-    // Reduce parallelism during build to prevent API overload
-    rules: {
-      '*.svg': ['@svgr/webpack'],
-    }
-  },
-  // Fallback webpack config for compatibility
-  webpack: (config, { isServer, dev }) => {
-    if (isServer && !dev) {
-      // Reduce parallelism for server-side builds
-      config.parallelism = 1;
-    }
-    return config;
-  },
+
   images: {
     remotePatterns: [
       {
@@ -31,6 +19,20 @@ const nextConfig = {
         hostname: "*.wp.com",
       }
     ],
+  },
+
+  webpack: (config, { isServer, dev }) => {
+    // Handle SVGs
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: ['@svgr/webpack'],
+    });
+
+    if (isServer && !dev) {
+      // Reduce parallelism for server-side builds to prevent API/Memory overload
+      config.parallelism = 1;
+    }
+    return config;
   },
 };
 
