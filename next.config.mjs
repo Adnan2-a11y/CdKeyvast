@@ -12,7 +12,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "try.tic.com.bd",
+        hostname: "https://vast.cdkeyonline.com",
       },
       {
         protocol: "https",
@@ -37,3 +37,4 @@ const nextConfig = {
 };
 
 export default nextConfig;
+
