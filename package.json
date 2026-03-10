@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "NODE_OPTIONS='--max-old-space-size=4096' NEXT_BUILD_WORKERS=2 next build",
-    "build:sequential": "NODE_OPTIONS='--max-old-space-size=4096' NEXT_BUILD_WORKERS=1 next build",
+    "build:sequential": "NODE_OPTIONS='--max-old-space-size=4096' NEXT_BUILD_WORKERS=1 next build --webpack",
     "build:turbo": "NODE_OPTIONS='--max-old-space-size=4096' next build",
     "start": "next start",
     "lint": "next lint"
