@@ -1,18 +1,21 @@
+import withSerwistInit from "@serwist/next";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   
-  // Prevents build workers from crashing low-RAM environments
+  // Memory and worker optimization
   experimental: {
     workerThreads: false,
-    cpus: 1
+    cpus: 1,
+    optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react'],
   },
 
   images: {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "https://vast.cdkeyonline.com",
+        hostname: "vast.cdkeyonline.com",
       },
       {
         protocol: "https",
@@ -32,13 +35,32 @@ const nextConfig = {
       // Reduce parallelism for server-side builds to prevent API/Memory overload
       config.parallelism = 1;
     }
+    
+    // Optimize memory usage
+    if (!dev) {
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          chunks: 'all',
+          cacheGroups: {
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: 'vendors',
+              chunks: 'all',
+            },
+          },
+        },
+      };
+    }
+    
     return config;
   },
 };
 
-<<<<<<< HEAD
-export default nextConfig;
-=======
-export default nextConfig;
+const withSerwistConfig = withSerwistInit({
+  swSrc: "app/sw.ts",
+  swDest: "public/sw.js",
+  disable: process.env.NODE_ENV === "development",
+});
 
->>>>>>> cbf27ac3e50f44b4effa3676d09d15b7bd2dbb15
+export default withSerwistConfig(nextConfig);

@@ -9,7 +9,6 @@ import { useCurrency } from "@/hooks/useCurrency";
 import { Product } from "@/types/woocommerce";
 import { SanitizedHTML } from "@/components/SanitizedHTML";
 
-
 interface ProductDetailClientProps {
   product: Product;
 }
@@ -23,7 +22,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
     : 0;
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 pt-24 pb-8">
       {/* Breadcrumb */}
       <Link
         href="/products"
@@ -69,7 +68,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
 
       {/* Main Content Grid */}
       <div className="grid gap-8 lg:grid-cols-3 lg:gap-12">
-        {/* Image Section - Takes 1 column on desktop */}
+        {/* Image Section */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -91,7 +90,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
           )}
         </motion.div>
 
-        {/* Short Description and Actions - Takes 2 columns on desktop, positioned beside image */}
+        {/* Short Description and Actions */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -157,7 +156,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
         </motion.div>
       </div>
 
-      {/* Full Description - Spans full width below */}
+      {/* Full Description */}
       {product.description && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
