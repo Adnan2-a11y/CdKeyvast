@@ -11,7 +11,7 @@ export default function WholesaleGiftCardsPage() {
                 <h2 className="text-2xl font-bold mb-4 text-gray-900">Bulk Digital Gift Cards for Your Business</h2>
                 <p className="text-lg leading-relaxed">
                   CDKeyVast offers competitive wholesale pricing on digital gift cards and game codes for businesses of all sizes. 
-                  Whether you're a retailer, corporate buyer, or reseller, our wholesale program provides you with instant access 
+                  Whether you&apos;re a retailer, corporate buyer, or reseller, our wholesale program provides you with instant access 
                   to digital products at bulk pricing.
                 </p>
               </div>

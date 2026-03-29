@@ -1,4 +1,4 @@
-import { Globe, Shield, Zap, CreditCard } from "lucide-react";
+import { Globe } from "lucide-react";
 import Container from "@/components/ui/container";
 
 const PaymentTrustBar = () => {

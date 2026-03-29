@@ -102,14 +102,13 @@ export default function TopBar() {
             <div style={styles.leftArea}>
               <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10 }}>
                 <div style={{ width: 120, height: 30, display: 'flex', alignItems: 'center' }}>
-                  <img 
-                    src="/images/CDkeyVast.svg" 
-                    alt="CDKeyVast Logo" 
-                    style={{ 
-                      width: '100%', 
-                      height: '100%', 
-                      objectFit: 'contain' 
-                    }}
+                  <Image
+                    src="/images/CDkeyVast.svg"
+                    alt="CDKeyVast Logo"
+                    width={120}
+                    height={30}
+                    style={{ objectFit: 'contain' }}
+                    priority
                   />
                 </div>
               </Link>

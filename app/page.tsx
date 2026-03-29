@@ -22,5 +22,8 @@ export default async function HomePage() {
     console.error("[HomePage] Error fetching data:", error);
   }
 
-  return <HomepageClient initialProducts={products} categories={categories} />;
+  const safeProducts = Array.isArray(products) ? products : [];
+  const safeCategories = Array.isArray(categories) ? categories : [];
+
+  return <HomepageClient initialProducts={safeProducts} categories={safeCategories} />;
 }

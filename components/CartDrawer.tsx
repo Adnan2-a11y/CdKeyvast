@@ -4,6 +4,7 @@ import { X, Minus, Plus, ShoppingBag } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useCurrency } from "@/hooks/useCurrency";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
 const CartDrawer = () => {
@@ -68,9 +69,11 @@ const CartDrawer = () => {
                       key={product.id}
                       className="flex gap-3 rounded-lg border border-border bg-secondary/30 p-3"
                     >
-                      <img
-                        src={product.images[0]?.src}
-                        alt={product.name}
+                      <Image
+                        src={product.images[0]?.src || "/placeholder.svg"}
+                        alt={`${product.name} thumbnail`}
+                        width={64}
+                        height={80}
                         className="h-20 w-16 rounded object-cover"
                       />
                       <div className="flex flex-1 flex-col justify-between">

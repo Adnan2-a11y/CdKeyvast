@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Star, MessageSquare, X } from "lucide-react";
+import Image from "next/image";
+import { Star } from "lucide-react";
 import { motion } from "framer-motion";
 
 const reviewData = {
@@ -131,11 +132,13 @@ export default function ReviewsPage() {
             >
               {/* Product Info */}
               <div className="mb-4 flex items-center gap-3">
-                <div className="h-12 w-12 overflow-hidden rounded-lg bg-muted">
-                  <img 
-                    src={review.productImage} 
-                    alt={review.productName}
-                    className="h-full w-full object-cover"
+                <div className="relative h-12 w-12 overflow-hidden rounded-lg bg-muted">
+                  <Image
+                    src={review.productImage}
+                    alt={`${review.productName} thumbnail`}
+                    fill
+                    sizes="48px"
+                    className="object-cover"
                   />
                 </div>
                 <div className="flex-1">

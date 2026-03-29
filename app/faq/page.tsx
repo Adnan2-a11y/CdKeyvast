@@ -93,7 +93,7 @@ export default function FAQPage() {
                   </h2>
                   <p className="text-gray-600 leading-relaxed">
                     Our automated delivery system works around the clock to provide you with instant 
-                    access to your purchased game cards. Whether you're gaming late at night or early 
+                    access to your purchased game cards. Whether you&apos;re gaming late at night or early 
                     in the morning, our system ensures immediate delivery. Our dedicated customer 
                     support team is available 24/7 to assist you with any questions or concerns you 
                     may have about your purchases or our services.
@@ -108,7 +108,7 @@ export default function FAQPage() {
                     We prioritize the security of your transactions and personal information. Our 
                     platform uses industry-standard encryption and secure payment gateways to ensure 
                     your data is protected. With years of experience in the digital gaming market, 
-                    we've built a reputation for reliability and customer satisfaction.
+                    we have built a reputation for reliability and customer satisfaction.
                   </p>
                 </section>
 

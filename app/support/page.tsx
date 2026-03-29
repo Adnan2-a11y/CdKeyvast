@@ -18,7 +18,7 @@ const faqData: FAQItem[] = [
   },
   {
     question: "HELP! MY GIFT CARD ISN'T WORKING",
-    answer: "If your gift card isn't working, please double-check the code you entered. If the issue persists, contact our support team with your order number and we'll help resolve the issue immediately."
+    answer: "If your gift card isn&apos;t working, please double-check the code you entered. If the issue persists, contact our support team with your order number and we&apos;ll help resolve the issue immediately."
   },
   {
     question: "WHY DO I HAVE TO VERIFY MY ORDER?",
@@ -26,7 +26,7 @@ const faqData: FAQItem[] = [
   },
   {
     question: "RETURNS & EXCHANGES",
-    answer: "Due to the digital nature of our products, we generally don't offer returns or exchanges. However, if you receive a defective or invalid code, we'll provide a replacement or refund."
+    answer: "Due to the digital nature of our products, we generally don&apos;t offer returns or exchanges. However, if you receive a defective or invalid code, we&apos;ll provide a replacement or refund."
   },
   {
     question: "HOW DO I ACCESS MY GIFT CARDS?",
@@ -34,7 +34,7 @@ const faqData: FAQItem[] = [
   },
   {
     question: "HOW DO I REDEEM MY GIFT CARD?",
-    answer: "Redemption instructions vary by platform. Each gift card comes with specific redemption instructions. Generally, you'll need to enter the code on the respective platform's store or website."
+    answer: "Redemption instructions vary by platform. Each gift card comes with specific redemption instructions. Generally, you&apos;ll need to enter the code on the respective platform&apos;s store or website."
   }
 ];
 

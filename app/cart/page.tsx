@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Minus, Plus, X, ArrowLeft, ShoppingBag, Tag } from "lucide-react";
 import { motion } from "framer-motion";
 import { useCart } from "@/contexts/CartContext";
@@ -50,7 +51,13 @@ export default function CartPage() {
                 >
                   <div className="col-span-2 flex items-center gap-3 sm:col-span-1">
                     <Link href={`/product/${product.slug}`} className="shrink-0">
-                      <img src={product.images[0]?.src} alt={product.name} className="h-16 w-12 rounded object-cover sm:h-20 sm:w-14" />
+                      <Image
+                        src={product.images[0]?.src || "/placeholder.svg"}
+                        alt={`${product.name} thumbnail`}
+                        width={56}
+                        height={80}
+                        className="h-16 w-12 rounded object-cover sm:h-20 sm:w-14"
+                      />
                     </Link>
                     <div className="min-w-0">
                       <Link href={`/product/${product.slug}`} className="line-clamp-2 text-sm font-semibold text-foreground hover:text-primary">{product.name}</Link>

@@ -1,10 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
-import Link from "next/link";
-import { useCart } from "@/contexts/CartContext";
 import { Product, ProductCategory } from "@/types/woocommerce";
-import ProductCard from "@/components/ProductCard";
 import ModernHeroSection from "@/components/ModernHeroSection";
 import BrandBar from "@/components/BrandBar";
 import InfoColumns from "@/components/InfoColumns";
@@ -20,9 +16,7 @@ interface HomepageClientProps {
   categories: ProductCategory[];
 }
 
-export default function HomepageClient({ initialProducts, categories }: HomepageClientProps) {
-  const { addItem } = useCart();
-
+export default function HomepageClient({ initialProducts }: HomepageClientProps) {
   return (
     <>
       <ModernHeroSection />

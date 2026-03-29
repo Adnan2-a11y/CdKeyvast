@@ -54,7 +54,7 @@ export default function LoginPage() {
           </button>
         </form>
         <p className="mt-6 text-center text-sm text-muted-foreground">
-          {isRegister ? "Already have an account?" : "Don't have an account?"}{" "}
+          {isRegister ? "Already have an account?" : "Don&apos;t have an account?"}{" "}
           <button onClick={() => setIsRegister(!isRegister)} className="font-medium text-primary hover:text-primary/80">{isRegister ? "Sign In" : "Register"}</button>
         </p>
       </motion.div>

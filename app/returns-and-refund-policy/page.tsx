@@ -34,8 +34,8 @@ export default function ReturnsAndRefundPolicyPage() {
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">We Do NOT Offer Refunds For:</h3>
                     <ul className="list-disc pl-6 mt-2 space-y-2">
-                      <li><strong>Change of Mind:</strong> If you simply decide you don't want the product after purchase</li>
-                      <li><strong>Regional Restrictions:</strong> If the product doesn't work in your region due to platform restrictions</li>
+                      <li><strong>Change of Mind:</strong> If you simply decide you don&apos;t want the product after purchase</li>
+                      <li><strong>Regional Restrictions:</strong> If the product doesn&apos;t work in your region due to platform restrictions</li>
                       <li><strong>Account Issues:</strong> Problems with your gaming platform account (banned, suspended, etc.)</li>
                       <li><strong>Lost Codes:</strong> If you lose or delete the digital code after successful delivery</li>
                       <li><strong>Incompatibility:</strong> If the product is not compatible with your device or system</li>
@@ -75,7 +75,7 @@ export default function ReturnsAndRefundPolicyPage() {
                   <div className="bg-blue-50 p-4 rounded-lg">
                     <h3 className="text-lg font-semibold mb-3 text-blue-900">Step 4: Resolution</h3>
                     <p>
-                      If your claim is approved, we'll either issue a replacement code or process a refund 
+                      If your claim is approved, we&apos;ll either issue a replacement code or process a refund 
                       to your original payment method within 3-5 business days.
                     </p>
                   </div>
@@ -86,12 +86,12 @@ export default function ReturnsAndRefundPolicyPage() {
               <div>
                 <h2 className="text-2xl font-bold mb-4 text-gray-900">Replacement Policy</h2>
                 <p className="mb-4">
-                  For eligible cases, we prioritize providing replacement codes over refunds. Here's how it works:
+                  For eligible cases, we prioritize providing replacement codes over refunds. Here&apos;s how it works:
                 </p>
                 <ul className="list-disc pl-6 space-y-2">
                   <li>Replacement codes are typically issued within 2-4 hours of approval</li>
-                  <li>You'll receive the new code via email with detailed instructions</li>
-                  <li>If a replacement is not available, we'll process a full refund</li>
+                  <li>You&apos;ll receive the new code via email with detailed instructions</li>
+                  <li>If a replacement is not available, we&apos;ll process a full refund</li>
                   <li>Multiple replacement requests for the same order may require additional verification</li>
                 </ul>
               </div>

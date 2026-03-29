@@ -1,14 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeft, ShoppingCart, Star, Shield, Zap, Tag } from "lucide-react";
 import { motion } from "framer-motion";
 import { useCart } from "@/contexts/CartContext";
 import { useCurrency } from "@/hooks/useCurrency";
 import { Product } from "@/types/woocommerce";
 import { SanitizedHTML } from "@/components/SanitizedHTML";
-
 
 interface ProductDetailClientProps {
   product: Product;
@@ -23,7 +22,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
     : 0;
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 pt-24 pb-8">
       {/* Breadcrumb */}
       <Link
         href="/products"
@@ -69,17 +68,19 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
 
       {/* Main Content Grid */}
       <div className="grid gap-8 lg:grid-cols-3 lg:gap-12">
-        {/* Image Section - Takes 1 column on desktop */}
+        {/* Image Section */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           className="relative overflow-hidden rounded-lg border border-border lg:col-span-1"
         >
-          <div className="aspect-square overflow-hidden rounded-lg">
-            <img
-              src={product.images[0]?.src}
-              alt={product.name}
-              className="h-full w-full object-cover"
+          <div className="relative aspect-square overflow-hidden rounded-lg">
+            <Image
+              src={product.images[0]?.src || "/placeholder.svg"}
+              alt={`${product.name} product image`}
+              fill
+              sizes="(min-width: 1024px) 33vw, 100vw"
+              className="object-cover"
             />
           </div>
           {discount > 0 && (
@@ -89,7 +90,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
           )}
         </motion.div>
 
-        {/* Short Description and Actions - Takes 2 columns on desktop, positioned beside image */}
+        {/* Short Description and Actions */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -155,7 +156,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
         </motion.div>
       </div>
 
-      {/* Full Description - Spans full width below */}
+      {/* Full Description */}
       {product.description && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}

@@ -37,10 +37,13 @@ export default async function ProductsPage() {
     console.error("[ProductsPage] Error fetching data:", error);
   }
 
+  const safeProducts = Array.isArray(products) ? products : [];
+  const safeCategories = Array.isArray(categories) ? categories : [];
+
   return (
     <div className="min-h-screen bg-background">
       <Suspense fallback={<ProductsLoading />}>
-        <ProductsClient initialProducts={products} initialCategories={categories} />
+        <ProductsClient initialProducts={safeProducts} initialCategories={safeCategories} />
       </Suspense>
     </div>
   );

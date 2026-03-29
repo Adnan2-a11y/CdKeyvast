@@ -153,8 +153,8 @@ export default function WhyCdkeyvastPage() {
                       ))}
                     </div>
                     <p className="text-gray-600 mb-4 italic">
-                      "Best prices and instant delivery! I've been buying from CDKeyVast for over a year 
-                      and never had any issues."
+                      &quot;Best prices and instant delivery! I&apos;ve been buying from CDKeyVast for over a year 
+                      and never had any issues.&quot;
                     </p>
                     <div className="font-semibold text-gray-900">- Sarah M.</div>
                   </div>
@@ -165,7 +165,7 @@ export default function WhyCdkeyvastPage() {
                       ))}
                     </div>
                     <p className="text-gray-600 mb-4 italic">
-                      "Amazing customer service! They helped me resolve an issue with my order within minutes."
+                      &quot;Amazing customer service! They helped me resolve an issue with my order within minutes.&quot;
                     </p>
                     <div className="font-semibold text-gray-900">- John D.</div>
                   </div>
@@ -176,7 +176,7 @@ export default function WhyCdkeyvastPage() {
                       ))}
                     </div>
                     <p className="text-gray-600 mb-4 italic">
-                      "Wide selection of gift cards and always competitive prices. Highly recommended!"
+                      &quot;Wide selection of gift cards and always competitive prices. Highly recommended!&quot;
                     </p>
                     <div className="font-semibold text-gray-900">- Mike R.</div>
                   </div>

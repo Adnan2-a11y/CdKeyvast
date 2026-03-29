@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Gift, CreditCard, Zap, Play } from "lucide-react";
+import { Gift, Zap, Play } from "lucide-react";
 import Container from "@/components/ui/container";
 
 const features = [

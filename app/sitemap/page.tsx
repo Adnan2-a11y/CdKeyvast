@@ -205,7 +205,7 @@ export default function SitemapPage() {
               <div className="bg-gray-50 rounded-lg p-6">
                 <h2 className="text-xl font-bold mb-4 text-gray-900">Need Help?</h2>
                 <p className="text-gray-700 mb-4">
-                  If you can't find what you're looking for, our customer support team is here to help 24/7.
+                  If you can&apos;t find what you&apos;re looking for, our customer support team is here to help 24/7.
                 </p>
                 <div className="space-y-2">
                   <p className="font-semibold text-gray-900">

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function BlogPage() {
   const blogPosts = [
@@ -88,11 +89,13 @@ export default function BlogPage() {
           {blogPosts.map((post) => (
             <article key={post.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
               {/* Post Image */}
-              <div className="h-48 bg-gray-200">
-                <img 
-                  src={post.image} 
+              <div className="relative h-48 bg-gray-200">
+                <Image
+                  src={post.image}
                   alt={post.title}
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover"
                 />
               </div>
               

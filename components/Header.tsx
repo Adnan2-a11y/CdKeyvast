@@ -13,17 +13,13 @@ interface HeaderProps {
 
 interface DropdownProps {
   label: string;
+  href: string;
   items: NavItem[];
   active: boolean;
   onToggle: () => void;
   onEnter: () => void;
   onLeave: () => void;
   twoColumns?: boolean;
-}
-
-interface SimpleLinkProps {
-  href: string;
-  label: string;
 }
 
 export default function Header({ categories }: HeaderProps) {
@@ -44,6 +40,7 @@ export default function Header({ categories }: HeaderProps) {
             <Dropdown
               key={cat.href}
               label={cat.label}
+              href={cat.href}
               items={cat.children}
               active={activeDropdown === cat.href}
               onToggle={() => setActiveDropdown((cur) => (cur === cat.href ? null : cat.href))}
@@ -80,22 +77,32 @@ export default function Header({ categories }: HeaderProps) {
   );
 }
 
-function Dropdown({ label, items, active, onToggle, onEnter, onLeave, twoColumns = false }: DropdownProps) {
+function Dropdown({ label, href, items, active, onToggle, onEnter, onLeave, twoColumns = false }: DropdownProps) {
   return (
     <div
       className="relative"
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
     >
-      <span
-        className="cursor-pointer px-[10px]"
-        onClick={onToggle}
-        role="button"
-        aria-haspopup={items.length > 0 ? "menu" : undefined}
-        aria-expanded={items.length > 0 ? active : undefined}
-      >
-        {label}
-      </span>
+      <div className="flex items-center gap-1 px-[10px]">
+        <Link href={href} className="cursor-pointer">
+          {label}
+        </Link>
+        {items.length > 0 && (
+          <button
+            type="button"
+            className="cursor-pointer"
+            onClick={onToggle}
+            aria-haspopup="menu"
+            aria-expanded={active}
+            aria-label={`${label} menu`}
+          >
+            <svg width="10" height="10" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path d="M5.25 7.5L10 12.25L14.75 7.5H5.25Z" />
+            </svg>
+          </button>
+        )}
+      </div>
 
       <div
         className={`absolute left-0 top-full pt-4 transition-all duration-200 ${
