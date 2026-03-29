@@ -23,10 +23,19 @@ function ProductsLoading() {
 }
 
 export default async function ProductsPage() {
-  const [{ products }, categories] = await Promise.all([
-    getProducts({ per_page: 100 }),
-    getCategories(),
-  ]);
+  let products: any[] = [];
+  let categories: any[] = [];
+
+  try {
+    const [productsRes, categoriesRes] = await Promise.all([
+      getProducts({ per_page: 100 }),
+      getCategories(),
+    ]);
+    products = productsRes.products;
+    categories = categoriesRes;
+  } catch (error) {
+    console.error("[ProductsPage] Error fetching data:", error);
+  }
 
   return (
     <div className="min-h-screen bg-background">

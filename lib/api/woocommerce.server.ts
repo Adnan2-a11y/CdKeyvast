@@ -15,6 +15,7 @@ if (!WP_URL || !CK || !CS) {
 
 // Basic Auth header (server-only — never sent to client)
 const AUTH_HEADER = "Basic " + Buffer.from(`${CK}:${CS}`).toString("base64");
+const USER_AGENT = "NextJS-WooCommerce-Client/1.0";
 
 // ─── Generic fetcher ────────────────────────────────────────────────────────
 
@@ -57,6 +58,7 @@ async function wcFetch<T>(options: WcFetchOptions): Promise<WcResponse<T>> {
     headers: {
       Authorization: AUTH_HEADER,
       "Content-Type": "application/json",
+      "User-Agent": USER_AGENT,
     },
     // Next.js ISR cache directive
     next: { revalidate },
