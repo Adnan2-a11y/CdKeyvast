@@ -3,12 +3,12 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
-    "dev": "NODE_OPTIONS='--max-old-space-size=2048' next dev --turbo",
-    "dev:webpack": "NODE_OPTIONS='--max-old-space-size=2048' next dev --webpack",
-    "build": "NODE_OPTIONS='--max-old-space-size=4096' NEXT_BUILD_WORKERS=2 next build --webpack",
-    "build:sequential": "NODE_OPTIONS='--max-old-space-size=4096' NEXT_BUILD_WORKERS=1 next build --webpack",
-    "build:turbo": "NODE_OPTIONS='--max-old-space-size=4096' NEXT_BUILD_WORKERS=1 next build --turbo",
-    "build:production": "NODE_ENV=production NODE_OPTIONS='--max-old-space-size=6144' NEXT_BUILD_WORKERS=1 next build --webpack",
+    "dev": "NODE_OPTIONS='--max-old-space-size=2048' next dev",
+    "dev:webpack": "NODE_OPTIONS='--max-old-space-size=2048' next dev",
+    "build": "NODE_OPTIONS='--max-old-space-size=4096' next build --webpack",
+    "build:sequential": "NODE_OPTIONS='--max-old-space-size=4096' next build --webpack",
+    "build:turbo": "NODE_OPTIONS='--max-old-space-size=4096' next build --turbo",
+    "build:production": "NODE_ENV=production NODE_OPTIONS='--max-old-space-size=6144' next build --webpack",
     "start": "NODE_OPTIONS='--max-old-space-size=2048' next start",
     "lint": "next lint"
   },
