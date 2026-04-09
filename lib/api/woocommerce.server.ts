@@ -172,6 +172,7 @@ async function wcFetch<T>(options: WcFetchOptions): Promise<WcResponse<T>> {
       "User-Agent": USER_AGENT,
       "Referer": WP_URL,
       "Origin": WP_URL,
+      ...(body && method !== "GET" ? { "Content-Type": "application/json" } : {}),
     },
     // Next.js ISR cache directive
     next: { revalidate },

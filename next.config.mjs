@@ -4,10 +4,8 @@ import withSerwistInit from "@serwist/next";
 const nextConfig = {
   reactStrictMode: true,
   
-  // Memory and worker optimization
   experimental: {
-    workerThreads: false,
-    cpus: 1,
+    turbopack: {}, 
     optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react'],
   },
 
@@ -15,22 +13,27 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "vast.cdkeyonline.com",
+        hostname: "cdkeyonline.com",
       },
       {
         protocol: "https",
         hostname: "*.wp.com",
+      },
+      {
+        protocol: "https",
+        hostname: "i0.wp.com",
+      },
+      {
+        protocol: "https",
+        hostname: "i1.wp.com",
+      },
+      {
+        protocol: "https",
+        hostname: "i2.wp.com",
       }
     ],
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  webpack: (config) => {
-    return config;
+    formats: ['image/webp', 'image/avif'],
+    minimumCacheTTL: 86400,
   },
 };
 

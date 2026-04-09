@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Lock, CreditCard, Shield, Zap, CheckCircle, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
+import DOMPurify from "isomorphic-dompurify";
 import { useCart } from "@/contexts/CartContext";
 import { useCurrency } from "@/hooks/useCurrency";
 import { createOrder, getPaymentGateways } from "@/lib/api/woocommerce.client";
@@ -172,7 +173,17 @@ export default function CheckoutPage() {
                       <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${isSelected ? "bg-primary/15 text-primary" : "bg-secondary text-muted-foreground"}`}><Icon size={20} /></div>
                       <div className="min-w-0 flex-1">
                         <p className="text-sm font-semibold text-foreground">{gateway.title}</p>
-                        {gateway.description && <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground" dangerouslySetInnerHTML={{ __html: gateway.description }} />}
+                        {gateway.description && (
+  <p
+    className="mt-0.5 line-clamp-2 text-xs text-muted-foreground"
+    dangerouslySetInnerHTML={{
+      __html: DOMPurify.sanitize(gateway.description, {
+        ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'br', 'p'],
+        ALLOWED_ATTR: [],
+      }),
+    }}
+  />
+)}
                       </div>
                       {isSelected && <CheckCircle size={18} className="shrink-0 text-primary" />}
                     </button>
