@@ -1,10 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
 import { ShoppingCart, Star } from "lucide-react";
 import Link from "next/link";
 import { useCurrency } from "@/hooks/useCurrency";
+import { SafeImage } from "@/components/SafeImage";
 
 interface ProductCardProps {
   title: string;
@@ -21,7 +21,10 @@ interface ProductCardProps {
   ratingCount?: number;
   onAddToCart?: () => void;
   onBuyNow?: () => void;
+  debug?: boolean;
 }
+
+const DEFAULT_PLACEHOLDER = "/product-placeholder.svg";
 
 const ProductCard = ({
   title,
@@ -35,8 +38,13 @@ const ProductCard = ({
   ratingCount = 0,
   onAddToCart,
   onBuyNow,
+  debug = false,
 }: ProductCardProps) => {
   const { formatPrice } = useCurrency();
+  
+  // Ensure we have valid image URLs, fallback to placeholder
+  const validImage = image && image.trim() !== "" ? image : DEFAULT_PLACEHOLDER;
+  const validBrandImage = brandImage && brandImage.trim() !== "" ? brandImage : DEFAULT_PLACEHOLDER;
 
   return (
     <motion.div
@@ -53,24 +61,28 @@ const ProductCard = ({
       <div className="relative bg-gray-50 p-6">
         {brandImage && (
           <div className="absolute top-2 right-2 h-12 w-12 overflow-hidden rounded-lg bg-white p-2 shadow-sm">
-            <Image
-              src={brandImage}
+            <SafeImage
+              src={validBrandImage}
               alt={brandName || "Brand"}
               fill
               sizes="48px"
               className="object-contain"
+              containerClassName="h-full w-full"
+              debug={debug}
             />
           </div>
         )}
         
         {/* Product Image */}
         <div className="relative mx-auto h-40 w-40">
-          <Image
-            src={image}
+          <SafeImage
+            src={validImage}
             alt={title}
             fill
             sizes="160px"
             className="object-contain transition-transform duration-300 group-hover:scale-105"
+            containerClassName="h-full w-full"
+            debug={debug}
           />
         </div>
       </div>

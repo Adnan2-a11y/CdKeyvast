@@ -1,17 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowLeft, ShoppingCart, Star, Shield, Zap, Tag } from "lucide-react";
 import { motion } from "framer-motion";
 import { useCart } from "@/contexts/CartContext";
 import { useCurrency } from "@/hooks/useCurrency";
 import { Product } from "@/types/woocommerce";
 import { SanitizedHTML } from "@/components/SanitizedHTML";
+import { SafeImage } from "@/components/SafeImage";
 
 interface ProductDetailClientProps {
   product: Product;
 }
+
+const DEFAULT_PLACEHOLDER = "/product-placeholder.svg";
 
 export default function ProductDetailClient({ product }: ProductDetailClientProps) {
   const { addItem } = useCart();
@@ -20,6 +22,9 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
   const discount = product.on_sale
     ? Math.round((1 - product.price / product.regular_price) * 100)
     : 0;
+
+  // Get valid product image or use placeholder
+  const productImage = product.images?.[0]?.src?.trim() || DEFAULT_PLACEHOLDER;
 
   return (
     <div className="container mx-auto px-4 pt-24 pb-8">
@@ -75,12 +80,13 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
           className="relative overflow-hidden rounded-lg border border-border lg:col-span-1"
         >
           <div className="relative aspect-square overflow-hidden rounded-lg">
-            <Image
-              src={product.images[0]?.src || "/placeholder.svg"}
+            <SafeImage
+              src={productImage}
               alt={`${product.name} product image`}
               fill
               sizes="(min-width: 1024px) 33vw, 100vw"
               className="object-cover"
+              debug={process.env.NODE_ENV === "development"}
             />
           </div>
           {discount > 0 && (

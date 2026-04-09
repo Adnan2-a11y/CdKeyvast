@@ -168,7 +168,7 @@ async function wcFetch<T>(options: WcFetchOptions): Promise<WcResponse<T>> {
     method,
     headers: {
       Authorization: AUTH_HEADER,
-      "Content-Type": "application/json",
+      //"Content-Type": "application/json",
       "User-Agent": USER_AGENT,
       "Referer": WP_URL,
       "Origin": WP_URL,
@@ -325,9 +325,41 @@ async function wcFetch<T>(options: WcFetchOptions): Promise<WcResponse<T>> {
 
 function transformProduct(raw: Record<string, unknown>): Product {
   const attributes = (raw.attributes as Record<string, unknown>[] | undefined) ?? [];
+  
+  // Debug logging for image issues
+  const rawImages = raw.images as Record<string, unknown>[] | undefined;
+  const productName = raw.name as string;
+  const productId = raw.id as number;
+  
+  if (!rawImages || rawImages.length === 0) {
+    logger.warn("transformProduct", `No images for product: ${productName} (ID: ${productId})`);
+  } else {
+    logger.debug("transformProduct", `Product: ${productName} (ID: ${productId}), Images: ${rawImages.length}`, {
+      firstImage: rawImages[0]?.src,
+      allImages: rawImages.map(img => ({ id: img.id, src: img.src })),
+    });
+  }
+  
+  // Filter out images with empty or invalid src
+  const validImages = ((rawImages) || []).filter((img) => {
+    const src = img.src as string;
+    return src && src.trim() !== "" && src !== "false" && !src.includes("undefined");
+  }).map((img) => ({
+    id: img.id as number,
+    src: img.src as string,
+    alt: (img.alt as string) || productName,
+  }));
+  
+  // Log if we filtered out invalid images
+  if (rawImages && rawImages.length > 0 && validImages.length === 0) {
+    logger.warn("transformProduct", `All images had invalid src for: ${productName} (ID: ${productId})`, {
+      rawImages: rawImages.map(img => ({ id: img.id, src: img.src })),
+    });
+  }
+  
   return {
-    id: raw.id as number,
-    name: raw.name as string,
+    id: productId,
+    name: productName,
     slug: raw.slug as string,
     description: (raw.description as string) || "",
     short_description: (raw.short_description as string) || "",
@@ -335,11 +367,7 @@ function transformProduct(raw: Record<string, unknown>): Product {
     regular_price: parseFloat((raw.regular_price as string) || "0"),
     sale_price: raw.sale_price ? parseFloat(raw.sale_price as string) : undefined,
     on_sale: (raw.on_sale as boolean) || false,
-    images: ((raw.images as Record<string, unknown>[]) || []).map((img) => ({
-      id: img.id as number,
-      src: img.src as string,
-      alt: (img.alt as string) || (raw.name as string),
-    })),
+    images: validImages,
     categories: ((raw.categories as Record<string, unknown>[]) || []).map((cat) => ({
       id: cat.id as number,
       name: cat.name as string,
@@ -447,8 +475,28 @@ export async function getProducts(params?: {
       fetchAll: !params?.page,
     });
 
+    // Debug: Log first product's image data to verify API response
+    if (result.data.length > 0) {
+      const firstProduct = result.data[0];
+      logger.debug("getProducts", `First product: ${firstProduct.name}`, {
+        id: firstProduct.id,
+        imagesCount: (firstProduct.images as unknown[])?.length || 0,
+        firstImageSrc: (firstProduct.images as Record<string, unknown>[])?.[0]?.src,
+        hasImages: !!(firstProduct.images as unknown[])?.length,
+      });
+    }
+
     const products = result.data.map(transformProduct);
-    logger.info("getProducts", `Returned ${products.length} products`);
+    
+    // Debug: Log products without images
+    const productsWithoutImages = products.filter(p => !p.images || p.images.length === 0);
+    if (productsWithoutImages.length > 0) {
+      logger.warn("getProducts", `${productsWithoutImages.length} products have no images`, {
+        products: productsWithoutImages.map(p => ({ id: p.id, name: p.name })),
+      });
+    }
+    
+    logger.info("getProducts", `Returned ${products.length} products, ${productsWithoutImages.length} without images`);
     return { products, total: result.total || products.length };
   } catch (error) {
     logger.error("getProducts", "Failed to fetch products", error);
@@ -471,8 +519,23 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
     });
 
     if (result.data && result.data.length > 0) {
-      const product = transformProduct(result.data[0]);
-      logger.info("getProductBySlug", `Found "${product.name}" (id=${product.id})`);
+      const rawProduct = result.data[0];
+      
+      // Debug: Log raw image data before transformation
+      logger.debug("getProductBySlug", `Raw product data for "${rawProduct.name}"`, {
+        id: rawProduct.id,
+        rawImages: rawProduct.images,
+        imagesCount: (rawProduct.images as unknown[])?.length || 0,
+      });
+      
+      const product = transformProduct(rawProduct);
+      
+      // Debug: Log transformed image data
+      logger.info("getProductBySlug", `Found "${product.name}" (id=${product.id}), images: ${product.images?.length || 0}`, {
+        firstImageSrc: product.images?.[0]?.src,
+        hasImages: product.images && product.images.length > 0,
+      });
+      
       return product;
     }
 

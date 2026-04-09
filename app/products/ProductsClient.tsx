@@ -388,6 +388,7 @@ useEffect(() => {
                       rating={product.average_rating}
                       ratingCount={product.rating_count}
                       onAddToCart={() => addItem(product)}
+                      debug={process.env.NODE_ENV === "development"}
                     />
                   </motion.div>
                 ))}

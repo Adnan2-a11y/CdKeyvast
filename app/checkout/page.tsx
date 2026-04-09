@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { Lock, CreditCard, Shield, Zap, CheckCircle, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import DOMPurify from "isomorphic-dompurify";
@@ -13,6 +12,7 @@ import { createOrder, getPaymentGateways } from "@/lib/api/woocommerce.client";
 import { BillingAddress } from "@/types/woocommerce";
 import { toast } from "sonner";
 import { CouponInput } from "@/components/CouponInput";
+import { SafeImage } from "@/components/SafeImage";
 
 const gatewayIcons: Record<string, typeof CreditCard> = {
   stripe: CreditCard,
@@ -216,7 +216,7 @@ export default function CheckoutPage() {
               {items.map(({ product, quantity }) => (
                 <div key={product.id} className="flex items-start gap-3">
                   <div className="relative shrink-0">
-                    <Image
+                    <SafeImage
                       src={product.images[0]?.src || "/placeholder.svg"}
                       alt={`${product.name} thumbnail`}
                       width={40}

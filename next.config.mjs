@@ -13,7 +13,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "cdkeyonline.com",
+        hostname: "vast.cdkeyonline.com",
       },
       {
         protocol: "https",
