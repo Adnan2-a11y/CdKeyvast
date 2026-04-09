@@ -1,5 +1,5 @@
 "use client";
-
+import Image from 'next/image';
 import { useState, useEffect } from "react";
 import { Search, Tag, ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
@@ -332,9 +332,21 @@ export default function ProductsClient({ initialProducts, initialCategories }: P
                 and dim to signal that new data is incoming. Skeletons only show on the
                 very first load when there are no products to display yet. */}
             {!loading && products.length === 0 ? (
-              <div className="py-20 text-center text-gray-500">
-                <p className="text-lg">No games found matching your criteria.</p>
-              </div>
+             <div className="flex flex-col items-center justify-center py-20 text-center">
+            <div className="relative mb-6 h-64 w-64">
+               <Image
+                 src="/images/_ (2).jpeg" 
+                 alt="Not found"
+                 fill
+                 className="object-contain opacity-80"
+                 priority 
+               />
+             </div>
+             <h3 className="text-2xl font-bold text-gray-800">Not found</h3>
+             <p className="mt-2 text-gray-500">
+               We couldn't find anything matching your criteria. Try adjusting your filters!
+             </p>
+           </div>
             ) : loading && products.length === 0 ? (
               // First-load skeleton — only shown when there's nothing to overlay
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
