@@ -5,12 +5,19 @@ const nextConfig = {
   reactStrictMode: true,
 
   experimental: {
-    turbopack: {},
     optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react'],
   },
 
   images: {
     remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdkeyonline.com",
+      },
+      {
+        protocol: "https",
+        hostname: "*.cdkeyonline.com",
+      },
       {
         protocol: "https",
         hostname: "vast.cdkeyonline.com",
@@ -34,6 +41,16 @@ const nextConfig = {
     ],
     formats: ['image/webp', 'image/avif'],
     minimumCacheTTL: 86400,
+  },
+
+  // Turbopack configuration for Serwist compatibility
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
+      },
+    },
   },
 };
 
