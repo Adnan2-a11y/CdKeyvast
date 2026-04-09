@@ -1,12 +1,25 @@
 "use client";
 
+import { useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { CSSProperties } from "react";
 import Container from "@/components/ui/container";
+import { useRouter } from "next/navigation";
+
+const TOPBAR_HEIGHT = 56;
 
 export default function TopBar() {
-  const TOPBAR_HEIGHT = 56; // ছোট করা হয়েছে
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
   const styles: Record<string, CSSProperties> = {
     wrapper: {
@@ -18,6 +31,8 @@ export default function TopBar() {
       position: "fixed",
       top: 0,
       left: 0,
+      // Emit the topbar height as a CSS variable consumed by Header and <main>
+      ["--topbar-h" as string]: `${TOPBAR_HEIGHT}px`,
       zIndex: 1000,
     },
     topStrip: {
@@ -40,7 +55,6 @@ export default function TopBar() {
       alignItems: "center",
       gap: 12,
     },
-    // 🔽 Search bar ছোট করা হয়েছে
     searchBox: {
       display: "flex",
       alignItems: "center",
@@ -50,6 +64,7 @@ export default function TopBar() {
       minWidth: 220,
       height: 32,
       border: "1px solid rgba(0,0,0,0.08)",
+      transition: "box-shadow 0.2s ease",
     },
     searchInput: {
       border: "none",
@@ -57,6 +72,10 @@ export default function TopBar() {
       padding: "5px 8px",
       fontSize: 14,
       flex: 1,
+      // ✅ FIX: explicit dark text so it reads on the white search box background
+      color: "#1a1a1a",
+      background: "transparent",
+      caretColor: "#1a1a1a",
     },
     searchBtn: {
       height: 26,
@@ -72,6 +91,7 @@ export default function TopBar() {
       fontWeight: 600,
       cursor: "pointer",
       fontSize: 13,
+      transition: "background 0.15s ease, transform 0.1s ease",
     },
     slimBtn: {
       background: "transparent",
@@ -81,6 +101,7 @@ export default function TopBar() {
       border: "1px solid rgba(255,255,255,0.05)",
       cursor: "pointer",
       fontSize: 13,
+      transition: "border-color 0.2s, color 0.2s",
     },
     checkoutBtn: {
       background: "#d9d9da",
@@ -91,6 +112,7 @@ export default function TopBar() {
       fontWeight: 700,
       cursor: "pointer",
       fontSize: 13,
+      transition: "background 0.15s ease, transform 0.1s ease",
     },
   };
 
@@ -115,10 +137,39 @@ export default function TopBar() {
             </div>
 
             <div style={styles.rightArea}>
-              <div style={styles.searchBox}>
-                <input placeholder="Search" style={styles.searchInput} />
-                <button style={styles.searchBtn}>🔍</button>
-              </div>
+              {/* ✅ FIX: wired up search form for actual navigation */}
+              <form onSubmit={handleSearch} style={{ display: "flex" }}>
+                <div
+                  style={styles.searchBox}
+                  onFocus={() => {
+                    (inputRef.current?.parentElement as HTMLElement)?.style &&
+                      Object.assign((inputRef.current!.parentElement as HTMLElement).style, {
+                        boxShadow: "0 0 0 2px rgba(196,43,31,0.4)",
+                        borderColor: "#c42b1f",
+                      });
+                  }}
+                  onBlur={() => {
+                    (inputRef.current?.parentElement as HTMLElement)?.style &&
+                      Object.assign((inputRef.current!.parentElement as HTMLElement).style, {
+                        boxShadow: "none",
+                        borderColor: "rgba(0,0,0,0.08)",
+                      });
+                  }}
+                >
+                  <input
+                    ref={inputRef}
+                    type="search"
+                    placeholder="Search games..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    style={styles.searchInput}
+                    aria-label="Search products"
+                  />
+                  <button type="submit" style={styles.searchBtn} aria-label="Submit search">
+                    🔍
+                  </button>
+                </div>
+              </form>
               <Link href="/login">
                 <button style={styles.slimBtn}>
                   LOGIN

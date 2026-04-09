@@ -89,7 +89,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <CartDrawer />
           <TopBar />
           <Header categories={headerCategories} />
-          <main className="pt-[111px] safe-area-top">{children}</main>
+          {/* ✅ FIX: padding-top = TopBar (56px) + Header (55px) = 111px.
+               Using calc() with the CSS variable means any resize of --topbar-h
+               automatically adjusts; 111px is the SSR-safe fallback. */}
+          <main
+            className="safe-area-top"
+            style={{ paddingTop: "calc(var(--topbar-h, 56px) + 55px)" }}
+          >
+            {children}
+          </main>
           <Footer />
           <ReviewsButton />
           

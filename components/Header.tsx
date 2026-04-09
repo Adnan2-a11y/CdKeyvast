@@ -32,7 +32,12 @@ export default function Header({ categories }: HeaderProps) {
   const handleDropdownLeave = () => setActiveDropdown(null);
 
   return (
-    <header className="w-full fixed top-[56px] left-0 z-[999] bg-[#c41200]">
+    // ✅ FIX: `top` is driven by --topbar-h injected by <TopBar> on the parent.
+    // Fallback to 56px matches the TOPBAR_HEIGHT constant so SSR renders correctly.
+    <header
+      className="w-full fixed left-0 z-[999] bg-[#c41200]"
+      style={{ top: "var(--topbar-h, 56px)" }}
+    >
       <Container className="flex items-center h-[55px] relative">
 
         <nav className="flex gap-[28px] text-[12px] font-[500] text-white uppercase items-center">
@@ -77,6 +82,7 @@ export default function Header({ categories }: HeaderProps) {
   );
 }
 
+
 function Dropdown({ label, href, items, active, onToggle, onEnter, onLeave, twoColumns = false }: DropdownProps) {
   return (
     <div
@@ -85,7 +91,7 @@ function Dropdown({ label, href, items, active, onToggle, onEnter, onLeave, twoC
       onMouseLeave={onLeave}
     >
       <div className="flex items-center gap-1 px-[10px]">
-        <Link href={href} className="cursor-pointer">
+        <Link href={href} className="cursor-pointer hover:opacity-80 transition-opacity duration-150">
           {label}
         </Link>
         {items.length > 0 && (
@@ -97,17 +103,35 @@ function Dropdown({ label, href, items, active, onToggle, onEnter, onLeave, twoC
             aria-expanded={active}
             aria-label={`${label} menu`}
           >
-            <svg width="10" height="10" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            {/* Chevron rotates smoothly on open */}
+            <svg
+              width="10" height="10" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
+              style={{
+                transform: active ? "rotate(180deg)" : "rotate(0deg)",
+                transition: "transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
+              }}
+            >
               <path d="M5.25 7.5L10 12.25L14.75 7.5H5.25Z" />
             </svg>
           </button>
         )}
       </div>
 
+      {/* Dropdown panel — slide-in-from-top + fade */}
       <div
-        className={`absolute left-0 top-full pt-4 transition-all duration-200 ${
-          active ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
+        style={{
+          position: "absolute",
+          left: 0,
+          top: "100%",
+          paddingTop: 8,
+          // GPU-composited animation for butter-smooth feel
+          willChange: "transform, opacity",
+          transform: active ? "translateY(0px)" : "translateY(-6px)",
+          opacity: active ? 1 : 0,
+          visibility: active ? "visible" : "hidden",
+          transition: "transform 0.22s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.22s ease, visibility 0s linear " + (active ? "0s" : "0.22s"),
+          pointerEvents: active ? "auto" : "none",
+        }}
       >
         <div
           className="bg-[#8B0000] border border-[#ddd] rounded-md shadow-lg"
@@ -125,7 +149,7 @@ function Dropdown({ label, href, items, active, onToggle, onEnter, onLeave, twoC
               <li key={index}>
                 <Link
                   href={item.href}
-                  className="block text-white px-3 py-2 hover:bg-[#a30000] rounded"
+                  className="block text-white px-3 py-2 hover:bg-[#a30000] rounded transition-colors duration-150"
                 >
                   {item.label}
                 </Link>

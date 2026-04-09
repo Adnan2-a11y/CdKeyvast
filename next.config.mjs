@@ -3,9 +3,9 @@ import withSerwistInit from "@serwist/next";
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  
+
   experimental: {
-    turbopack: {}, 
+    turbopack: {},
     optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react'],
   },
 

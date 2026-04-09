@@ -41,7 +41,7 @@ const ProductCard = ({
   debug = false,
 }: ProductCardProps) => {
   const { formatPrice } = useCurrency();
-  
+
   // Ensure we have valid image URLs, fallback to placeholder
   const validImage = image && image.trim() !== "" ? image : DEFAULT_PLACEHOLDER;
   const validBrandImage = brandImage && brandImage.trim() !== "" ? brandImage : DEFAULT_PLACEHOLDER;
@@ -72,7 +72,7 @@ const ProductCard = ({
             />
           </div>
         )}
-        
+
         {/* Product Image */}
         <div className="relative mx-auto h-40 w-40">
           <SafeImage

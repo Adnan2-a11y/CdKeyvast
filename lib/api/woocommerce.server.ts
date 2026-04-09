@@ -40,116 +40,116 @@ interface WcResponse<T> {
   totalPages: number;
 }
 
- type WcRetryOptions = {
-   retries: number;
-   baseDelayMs: number;
-   maxDelayMs: number;
- };
+type WcRetryOptions = {
+  retries: number;
+  baseDelayMs: number;
+  maxDelayMs: number;
+};
 
- // Rate limiting queue to prevent overwhelming the server
- class RateLimiter {
-   private queue: Array<() => Promise<any>> = [];
-   private running = 0;
-   private maxConcurrent: number;
-   private delayBetweenRequests: number;
+// Rate limiting queue to prevent overwhelming the server
+class RateLimiter {
+  private queue: Array<() => Promise<any>> = [];
+  private running = 0;
+  private maxConcurrent: number;
+  private delayBetweenRequests: number;
 
-   constructor(maxConcurrent: number = 2, delayBetweenRequests: number = 500) {
-     this.maxConcurrent = maxConcurrent;
-     this.delayBetweenRequests = delayBetweenRequests;
-   }
+  constructor(maxConcurrent: number = 2, delayBetweenRequests: number = 500) {
+    this.maxConcurrent = maxConcurrent;
+    this.delayBetweenRequests = delayBetweenRequests;
+  }
 
-   async execute<T>(task: () => Promise<T>): Promise<T> {
-     return new Promise((resolve, reject) => {
-       this.queue.push(async () => {
-         try {
-           const result = await task();
-           resolve(result);
-         } catch (error) {
-           reject(error);
-         }
-       });
-       this.process();
-     });
-   }
+  async execute<T>(task: () => Promise<T>): Promise<T> {
+    return new Promise((resolve, reject) => {
+      this.queue.push(async () => {
+        try {
+          const result = await task();
+          resolve(result);
+        } catch (error) {
+          reject(error);
+        }
+      });
+      this.process();
+    });
+  }
 
-   private async process() {
-     if (this.running >= this.maxConcurrent || this.queue.length === 0) {
-       return;
-     }
+  private async process() {
+    if (this.running >= this.maxConcurrent || this.queue.length === 0) {
+      return;
+    }
 
-     this.running++;
-     const task = this.queue.shift();
-     
-     if (task) {
-       try {
-         await task();
-       } finally {
-         this.running--;
-         // Add delay between requests
-         setTimeout(() => this.process(), this.delayBetweenRequests);
-       }
-     }
-   }
- }
+    this.running++;
+    const task = this.queue.shift();
 
- // Global rate limiter instance - configurable via environment variables
- const maxConcurrent = parseInt(process.env.WC_MAX_CONCURRENT_REQUESTS || "2");
- const delayBetweenRequests = parseInt(process.env.WC_DELAY_BETWEEN_REQUESTS || "500");
- const rateLimiter = new RateLimiter(maxConcurrent, delayBetweenRequests);
+    if (task) {
+      try {
+        await task();
+      } finally {
+        this.running--;
+        // Add delay between requests
+        setTimeout(() => this.process(), this.delayBetweenRequests);
+      }
+    }
+  }
+}
 
- function sleep(ms: number): Promise<void> {
-   return new Promise((resolve) => setTimeout(resolve, ms));
- }
+// Global rate limiter instance - configurable via environment variables
+const maxConcurrent = parseInt(process.env.WC_MAX_CONCURRENT_REQUESTS || "2");
+const delayBetweenRequests = parseInt(process.env.WC_DELAY_BETWEEN_REQUESTS || "500");
+const rateLimiter = new RateLimiter(maxConcurrent, delayBetweenRequests);
 
- function isTransientHttpStatus(status: number): boolean {
-   return status === 429 || status === 502 || status === 503 || status === 504;
- }
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
- async function fetchWithRetry(
-   url: string,
-   fetchOptions: RequestInit & { next?: { revalidate: number | false } },
-   meta: { tag: string; method: string; pathname: string; search: string },
-   retryOptions?: Partial<WcRetryOptions>
- ): Promise<Response> {
-   const opts: WcRetryOptions = {
-     retries: retryOptions?.retries ?? 5, // Increased retries for build time
-     baseDelayMs: retryOptions?.baseDelayMs ?? 500, // Increased base delay
-     maxDelayMs: retryOptions?.maxDelayMs ?? 8000, // Increased max delay
-   };
+function isTransientHttpStatus(status: number): boolean {
+  return status === 429 || status === 502 || status === 503 || status === 504;
+}
 
-   let attempt = 0;
-   // eslint-disable-next-line no-constant-condition
-   while (true) {
-     try {
-       const res = await fetch(url, fetchOptions);
-       if (!res.ok && isTransientHttpStatus(res.status) && attempt < opts.retries) {
-         const delay = Math.min(opts.maxDelayMs, opts.baseDelayMs * Math.pow(2, attempt));
-         logger.warn(meta.tag, `HTTP ${res.status} (transient) — retrying in ${delay}ms`, {
-           url: meta.pathname,
-           attempt: attempt + 1,
-           retries: opts.retries,
-         });
-         await sleep(delay);
-         attempt++;
-         continue;
-       }
-       return res;
-     } catch (error) {
-       if (attempt < opts.retries) {
-         const delay = Math.min(opts.maxDelayMs, opts.baseDelayMs * Math.pow(2, attempt));
-         logger.warn(meta.tag, `Fetch failed (network) — retrying in ${delay}ms`, {
-           url: meta.pathname,
-           attempt: attempt + 1,
-           retries: opts.retries,
-         });
-         await sleep(delay);
-         attempt++;
-         continue;
-       }
-       throw error;
-     }
-   }
- }
+async function fetchWithRetry(
+  url: string,
+  fetchOptions: RequestInit & { next?: { revalidate: number | false } },
+  meta: { tag: string; method: string; pathname: string; search: string },
+  retryOptions?: Partial<WcRetryOptions>
+): Promise<Response> {
+  const opts: WcRetryOptions = {
+    retries: retryOptions?.retries ?? 5, // Increased retries for build time
+    baseDelayMs: retryOptions?.baseDelayMs ?? 500, // Increased base delay
+    maxDelayMs: retryOptions?.maxDelayMs ?? 8000, // Increased max delay
+  };
+
+  let attempt = 0;
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    try {
+      const res = await fetch(url, fetchOptions);
+      if (!res.ok && isTransientHttpStatus(res.status) && attempt < opts.retries) {
+        const delay = Math.min(opts.maxDelayMs, opts.baseDelayMs * Math.pow(2, attempt));
+        logger.warn(meta.tag, `HTTP ${res.status} (transient) — retrying in ${delay}ms`, {
+          url: meta.pathname,
+          attempt: attempt + 1,
+          retries: opts.retries,
+        });
+        await sleep(delay);
+        attempt++;
+        continue;
+      }
+      return res;
+    } catch (error) {
+      if (attempt < opts.retries) {
+        const delay = Math.min(opts.maxDelayMs, opts.baseDelayMs * Math.pow(2, attempt));
+        logger.warn(meta.tag, `Fetch failed (network) — retrying in ${delay}ms`, {
+          url: meta.pathname,
+          attempt: attempt + 1,
+          retries: opts.retries,
+        });
+        await sleep(delay);
+        attempt++;
+        continue;
+      }
+      throw error;
+    }
+  }
+}
 
 async function wcFetch<T>(options: WcFetchOptions): Promise<WcResponse<T>> {
   const {
@@ -246,14 +246,14 @@ async function wcFetch<T>(options: WcFetchOptions): Promise<WcResponse<T>> {
 
   return { data: allResults as T, total: totalItems, totalPages: page };
 }*/
-// ─── Paginated: fetch ALL pages (Hardened Architect Version) ────────────────────────
-  const allResults: unknown[] = []; 
+  // ─── Paginated: fetch ALL pages (Hardened Architect Version) ────────────────────────
+  const allResults: unknown[] = [];
   let page = 1;
   let totalItems = 0;
   let totalPages = 1;
 
   // Maximum items allowed in memory before we force a stop (Safety Guard)
-  const MAX_MEMORY_ITEMS = 2000; 
+  const MAX_MEMORY_ITEMS = 2000;
 
   logger.debug("wc-fetch", `Paginating ${url.pathname}${url.search}`);
 
@@ -283,7 +283,7 @@ async function wcFetch<T>(options: WcFetchOptions): Promise<WcResponse<T>> {
       }
 
       const pageData = await res.json();
-      
+
       // 2. Initial Setup: Set boundaries on the first request
       if (page === 1) {
         totalPages = parseInt(res.headers.get("X-WP-TotalPages") || "1", 10);
@@ -293,7 +293,7 @@ async function wcFetch<T>(options: WcFetchOptions): Promise<WcResponse<T>> {
       // 3. Memory Protection: Prevent Vercel/Node crash if store grows too large
       if (allResults.length + pageData.length > MAX_MEMORY_ITEMS) {
         logger.warn("wc-fetch", `Memory Guard triggered at ${allResults.length} items. Truncating fetch.`);
-        break; 
+        break;
       }
 
       allResults.push(...pageData); // More memory efficient than [...spread]
@@ -303,15 +303,15 @@ async function wcFetch<T>(options: WcFetchOptions): Promise<WcResponse<T>> {
       page++;
     }
 
-    logger.info("wc-fetch", `Pagination complete`, { 
-      pagesFetched: page - 1, 
-      totalItemsStored: allResults.length 
+    logger.info("wc-fetch", `Pagination complete`, {
+      pagesFetched: page - 1,
+      totalItemsStored: allResults.length
     });
 
-    return { 
-      data: allResults as T, 
-      total: totalItems, 
-      totalPages: totalPages 
+    return {
+      data: allResults as T,
+      total: totalItems,
+      totalPages: totalPages
     };
 
   } catch (error) {
@@ -325,12 +325,12 @@ async function wcFetch<T>(options: WcFetchOptions): Promise<WcResponse<T>> {
 
 function transformProduct(raw: Record<string, unknown>): Product {
   const attributes = (raw.attributes as Record<string, unknown>[] | undefined) ?? [];
-  
+
   // Debug logging for image issues
   const rawImages = raw.images as Record<string, unknown>[] | undefined;
   const productName = raw.name as string;
   const productId = raw.id as number;
-  
+
   if (!rawImages || rawImages.length === 0) {
     logger.warn("transformProduct", `No images for product: ${productName} (ID: ${productId})`);
   } else {
@@ -339,7 +339,7 @@ function transformProduct(raw: Record<string, unknown>): Product {
       allImages: rawImages.map(img => ({ id: img.id, src: img.src })),
     });
   }
-  
+
   // Filter out images with empty or invalid src
   const validImages = ((rawImages) || []).filter((img) => {
     const src = img.src as string;
@@ -349,14 +349,14 @@ function transformProduct(raw: Record<string, unknown>): Product {
     src: img.src as string,
     alt: (img.alt as string) || productName,
   }));
-  
+
   // Log if we filtered out invalid images
   if (rawImages && rawImages.length > 0 && validImages.length === 0) {
     logger.warn("transformProduct", `All images had invalid src for: ${productName} (ID: ${productId})`, {
       rawImages: rawImages.map(img => ({ id: img.id, src: img.src })),
     });
   }
-  
+
   return {
     id: productId,
     name: productName,
@@ -487,7 +487,7 @@ export async function getProducts(params?: {
     }
 
     const products = result.data.map(transformProduct);
-    
+
     // Debug: Log products without images
     const productsWithoutImages = products.filter(p => !p.images || p.images.length === 0);
     if (productsWithoutImages.length > 0) {
@@ -495,7 +495,7 @@ export async function getProducts(params?: {
         products: productsWithoutImages.map(p => ({ id: p.id, name: p.name })),
       });
     }
-    
+
     logger.info("getProducts", `Returned ${products.length} products, ${productsWithoutImages.length} without images`);
     return { products, total: result.total || products.length };
   } catch (error) {
@@ -520,22 +520,22 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
 
     if (result.data && result.data.length > 0) {
       const rawProduct = result.data[0];
-      
+
       // Debug: Log raw image data before transformation
       logger.debug("getProductBySlug", `Raw product data for "${rawProduct.name}"`, {
         id: rawProduct.id,
         rawImages: rawProduct.images,
         imagesCount: (rawProduct.images as unknown[])?.length || 0,
       });
-      
+
       const product = transformProduct(rawProduct);
-      
+
       // Debug: Log transformed image data
       logger.info("getProductBySlug", `Found "${product.name}" (id=${product.id}), images: ${product.images?.length || 0}`, {
         firstImageSrc: product.images?.[0]?.src,
         hasImages: product.images && product.images.length > 0,
       });
-      
+
       return product;
     }
 
@@ -785,12 +785,12 @@ export async function validateCoupon(
     if (coupon.date_expires) {
       const now = new Date();
       const expiryDate = new Date(coupon.date_expires);
-      
+
       if (expiryDate < now) {
         logger.warn("validateCoupon", `Coupon expired: ${code}`);
-        return { 
-          valid: false, 
-          coupon, 
+        return {
+          valid: false,
+          coupon,
           error: `This coupon expired on ${expiryDate.toLocaleDateString()}`,
           reason: "expired"
         };
@@ -800,10 +800,10 @@ export async function validateCoupon(
     // Check usage limit
     if (coupon.usage_limit && coupon.usage_count >= coupon.usage_limit) {
       logger.warn("validateCoupon", `Usage limit exceeded: ${code}`);
-      return { 
-        valid: false, 
-        coupon, 
-        error: "This coupon has reached its usage limit", 
+      return {
+        valid: false,
+        coupon,
+        error: "This coupon has reached its usage limit",
         reason: "usage_limit"
       };
     }
@@ -871,7 +871,7 @@ export async function validateCoupon(
 
     // Check category restrictions
     if (coupon.product_categories && coupon.product_categories.length > 0) {
-      const cartCategoryIds = cartItems.flatMap(item => 
+      const cartCategoryIds = cartItems.flatMap(item =>
         item.product.categories?.map(cat => cat.id) || []
       );
       const hasAllowedCategory = cartCategoryIds.some(id => coupon.product_categories?.includes(id));
