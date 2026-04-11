@@ -8,6 +8,11 @@ import { transformProduct } from "./transforms.server";
 /**
  * Fetch products with filtering, sorting, and pagination.
  * ISR: revalidates every 60 seconds.
+ * 
+ * Note: Category filtering is done client-side by slug because:
+ * 1. WooCommerce API expects category IDs, not slugs
+ * 2. Products already contain their categories data
+ * 3. More efficient than making an extra API call to lookup category ID
  */
 export async function getProducts(params?: {
   category?: string;
@@ -30,7 +35,8 @@ export async function getProducts(params?: {
       _fields: PRODUCT_LIST_FIELDS,
     };
 
-    if (params?.category) qp.category = params.category;
+    // Note: We don't pass category to WooCommerce API here because it expects IDs, not slugs
+    // Category filtering is applied after fetching using the embedded category data
     if (params?.search) qp.search = params.search;
 
     if (params?.sort === "price-asc") {
@@ -51,7 +57,22 @@ export async function getProducts(params?: {
       fetchAll: !params?.page,
     });
 
-    const products = result.data.map(transformProduct);
+    let products = result.data.map(transformProduct);
+    
+    // Filter by category slug if provided
+    // This works because products contain their categories with slugs
+    if (params?.category) {
+      const categorySlug = params.category.toLowerCase();
+      const beforeCount = products.length;
+      products = products.filter(product => 
+        product.categories.some(cat => 
+          cat.slug.toLowerCase() === categorySlug ||
+          cat.name.toLowerCase() === categorySlug
+        )
+      );
+      logger.debug("getProducts", `Category filter "${categorySlug}": ${beforeCount} → ${products.length} products`);
+    }
+    
     const productsWithoutImages = products.filter(p => !p.images || p.images.length === 0);
     
     if (productsWithoutImages.length > 0) {
@@ -59,7 +80,7 @@ export async function getProducts(params?: {
     }
 
     logger.info("getProducts", `Returned ${products.length} products, ${productsWithoutImages.length} without images`);
-    return { products, total: result.total || products.length };
+    return { products, total: products.length };
   } catch (error) {
     logger.error("getProducts", "Failed to fetch products", error);
     return { products: [], total: 0 };

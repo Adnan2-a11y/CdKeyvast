@@ -12,15 +12,11 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "cdkeyonline.com",
+        hostname: "wp.cdkeyvast.com",
       },
       {
         protocol: "https",
-        hostname: "*.cdkeyonline.com",
-      },
-      {
-        protocol: "https",
-        hostname: "vast.cdkeyonline.com",
+        hostname: "*.cdkeyvast.com",
       },
       {
         protocol: "https",
